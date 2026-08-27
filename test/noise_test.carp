@@ -1,0 +1,57 @@
+(load "Test.carp")
+(use Test)
+(load "noise.carp")
+(use Noise)
+
+(deftest noise-test
+  (let [noise-a (Noise.make-noise 123)
+        noise-b (Noise.make-noise 456)
+        noise-a2 (Noise.make-noise 123)
+        n1 (Noise.noise2d &noise-a 0.1 0.2)
+        n2 (Noise.noise2d &noise-b 0.1 0.2)
+        n1-again (Noise.noise2d &noise-a2 0.1 0.2)
+        ;; Continuity check
+        n-near (Noise.noise2d &noise-a 0.101 0.2)
+        diff (Double.abs (- n1 n-near))
+        s1 (assert-equal noise-test
+          n1
+          n1-again
+          "Deterministic: same seed yields same output")
+        s2 (assert-true &s1
+          (not (= n1 n2))
+          "Seeded: different seeds yield different outputs")
+        s3 (assert-true &s2
+          (and (>= n1 -1.0) (<= n1 1.0))
+          "Range: output is within [-1, 1]")
+        s4 (assert-true &s3
+          (< diff 0.1)
+          "Continuity: small input change yields small output change")
+        n3d (Noise.noise3d &noise-a 0.1 0.2 0.3)
+        s5 (assert-true &s4 (and (>= n3d -1.0) (<= n3d 1.0)) "Range 3D")
+        ;; FBM test
+        config (FBMConfig.init 4 0.5 2.0)
+        f1 (Noise.fbm2d &noise-a 0.1 0.2 &config)
+        s6 (assert-true &s5 (and (>= f1 -1.0) (<= f1 1.0)) "FBM Range")
+        ;; Global RNG mutation check
+        _ (Random.seed-from 1337.0)
+        rng-val-before (Random.random)
+        _2 (Random.seed-from 1337.0)
+        _3 (Noise.make-noise 999)
+        rng-val-after (Random.random)
+        s7 (assert-equal &s6
+          rng-val-before
+          rng-val-after
+          "No Global RNG mutation")
+        ;; Domain reproducibility test
+        domain-ok true]
+    (do
+      (for [x 0 10]
+        (for [y 0 10]
+          (let [dx (/ (Double.from-int x) 10.0)
+                dy (/ (Double.from-int y) 10.0)
+                v1 (Noise.noise2d &noise-a dx dy)
+                v2 (Noise.noise2d &noise-a2 dx dy)]
+            (if (not (= v1 v2)) (set! domain-ok false) ()))))
+      (assert-true &s7
+        domain-ok
+        "Domain reproducibility: same seed yields same output over 10x10 area"))))

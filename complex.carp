@@ -1,0 +1,291 @@
+;; A Complex number module for Carp
+;; Provides a set of operations for complex numbers (a + bi).
+(use Double)
+
+(deftype Complex [real Double
+                  imag Double])
+
+(defmodule Complex
+  ;; --- Constants ---
+
+  (doc zero "Returns the complex number 0 + 0i.")
+  (defn zero [] (Complex.init 0.0 0.0))
+
+  (doc one "Returns the complex number 1 + 0i.")
+  (defn one [] (Complex.init 1.0 0.0))
+
+  (doc i "Returns the complex number 0 + 1i.")
+  (defn i [] (Complex.init 0.0 1.0))
+
+  ;; --- Constructors ---
+
+  (doc from-real "Creates a complex number from a real value: r + 0i.")
+  (defn from-real [r] (Complex.init r 0.0))
+
+  (doc from-imag "Creates a complex number from an imaginary value: 0 + im*i.")
+  (defn from-imag [im] (Complex.init 0.0 im))
+
+  (doc from-polar
+    "Creates a complex number from polar coordinates (radius and angle).")
+  (defn from-polar [r theta]
+    (Complex.init (* r (Double.cos theta)) (* r (Double.sin theta))))
+
+  ;; --- Basic Arithmetic ---
+
+  (doc + "Adds two complex numbers.")
+  (defn + [a b]
+    (Complex.init (+ @(Complex.real a) @(Complex.real b))
+                  (+ @(Complex.imag a) @(Complex.imag b))))
+
+  (doc - "Subtracts the second complex number from the first.")
+  (defn - [a b]
+    (Complex.init (- @(Complex.real a) @(Complex.real b))
+                  (- @(Complex.imag a) @(Complex.imag b))))
+
+  (doc *
+    "Multiplies two complex numbers using the formula: (ac - bd) + (ad + bc)i.")
+  (defn * [a b]
+    (let [ar @(Complex.real a)
+          ai @(Complex.imag a)
+          br @(Complex.real b)
+          bi @(Complex.imag b)]
+      (Complex.init (- (* ar br) (* ai bi)) (+ (* ar bi) (* ai br)))))
+
+  (doc / "Divides the first complex number by the second.")
+  (defn / [a b]
+    (let [ar @(Complex.real a)
+          ai @(Complex.imag a)
+          br @(Complex.real b)
+          bi @(Complex.imag b)
+          denom (+ (* br br) (* bi bi))]
+      (Complex.init (/ (+ (* ar br) (* ai bi)) denom)
+                    (/ (- (* ai br) (* ar bi)) denom))))
+
+  ;; --- Magnitude and Phase ---
+
+  (doc norm
+    "Calculates the squared magnitude (norm) of a complex number: r^2 + i^2.")
+  (defn norm [a]
+    (let [r @(Complex.real a)
+          im @(Complex.imag a)] (+ (* r r) (* im im))))
+
+  (doc abs
+    "Calculates the magnitude (absolute value) of a complex number. Uses a robust implementation (hypot) to prevent overflow/underflow.")
+  (defn abs [a]
+    (let [x (Double.abs @(Complex.real a))
+          y (Double.abs @(Complex.imag a))]
+      (if (Double.= x 0.0)
+        y
+        (if (Double.= y 0.0)
+          x
+          (if (> x y)
+            (* x (Double.sqrt (+ 1.0 (let [tmp (/ y x)] (* tmp tmp)))))
+            (* y (Double.sqrt (+ 1.0 (let [tmp (/ x y)] (* tmp tmp))))))))))
+
+  (doc arg
+    "Calculates the phase angle (argument) of a complex number in radians.")
+  (defn arg [a] (Double.atan2 @(Complex.imag a) @(Complex.real a)))
+
+  (doc conj "Returns the complex conjugate: a - bi.")
+  (defn conj [a] (Complex.init @(Complex.real a) (Double.neg @(Complex.imag a))))
+
+  (doc recip "Returns the reciprocal of a complex number: 1/z.")
+  (defn recip [a]
+    (let [r @(Complex.real a)
+          im @(Complex.imag a)
+          d (Complex.norm a)]
+      (Complex.init (/ r d) (/ (Double.neg im) d))))
+
+  ;; --- Scalar Operations ---
+
+  (doc scalar-add "Adds a real scalar 's' to a complex number 'a'.")
+  (defn scalar-add [a s]
+    (Complex.init (+ @(Complex.real a) s) @(Complex.imag a)))
+
+  (doc scalar-sub "Subtracts a real scalar 's' from a complex number 'a'.")
+  (defn scalar-sub [a s]
+    (Complex.init (- @(Complex.real a) s) @(Complex.imag a)))
+
+  (doc scalar-mul "Multiplies a complex number 'a' by a real scalar 's'.")
+  (defn scalar-mul [a s]
+    (Complex.init (* @(Complex.real a) s) (* @(Complex.imag a) s)))
+
+  (doc scalar-div "Divides a complex number 'a' by a real scalar 's'.")
+  (defn scalar-div [a s]
+    (Complex.init (/ @(Complex.real a) s) (/ @(Complex.imag a) s)))
+
+  (doc scalar-over
+    "Divides a real scalar 's' by a complex number 'z'. Result is s * recip(z).")
+  (defn scalar-over [s z] (Complex.scalar-mul &(Complex.recip z) s))
+
+  ;; --- Fundamental Math Functions ---
+
+  (doc exp "Calculates the complex exponential: e^a.")
+  (defn exp [a]
+    (let [ea (Double.exp @(Complex.real a))
+          im @(Complex.imag a)]
+      (Complex.init (* ea (Double.cos im)) (* ea (Double.sin im)))))
+
+  (doc ln "Calculates the principal branch of the natural logarithm: ln(z).")
+  (defn ln [a] (Complex.init (Double.log (Complex.abs a)) (Complex.arg a)))
+
+  (doc sqrt
+    "Calculates the principal square root of a complex number. Uses an algebraic formulation for better numerical stability.")
+  (defn sqrt [a]
+    (let [x @(Complex.real a)
+          y @(Complex.imag a)]
+      (if (and (Double.= x 0.0) (Double.= y 0.0))
+        (Complex.zero)
+        (let [m (Complex.abs a)
+              w (Double.sqrt (* 0.5 (+ m (Double.abs x))))]
+          (if (>= x 0.0)
+            (Complex.init w (/ y (* 2.0 w)))
+            (Complex.init (/ (Double.abs y) (* 2.0 w))
+                          (if (>= y 0.0) w (Double.neg w))))))))
+
+  (doc pow "Calculates the complex power: a^b.")
+  (defn pow [a b]
+    (let [lna (Complex.ln a)
+          prod (Complex.* b &lna)] (Complex.exp &prod)))
+
+  (doc powi
+    "Calculates the complex number raised to an integer power 'n' using exponentiation by squaring.")
+  (defn powi [a n]
+    (let [abs-n (if (Int.< n 0) (Int.neg n) n)
+          res (Complex.one)
+          base @a
+          exp abs-n]
+      (do
+        (while (Int.> exp 0)
+          (do
+            (if (Int.odd? exp) (set! res (Complex.* &res &base)) ())
+            (set! base (Complex.* &base &base))
+            (set! exp (Int./ exp 2))))
+        (if (Int.< n 0) (Complex.recip &res) res))))
+
+  ;; --- Trigonometric ---
+
+  (doc sin "Calculates the complex sine.")
+  (defn sin [a]
+    (let [x @(Complex.real a)
+          y @(Complex.imag a)]
+      (Complex.init (* (Double.sin x) (Double.cosh y))
+                    (* (Double.cos x) (Double.sinh y)))))
+
+  (doc cos "Calculates the complex cosine.")
+  (defn cos [a]
+    (let [x @(Complex.real a)
+          y @(Complex.imag a)]
+      (Complex.init (* (Double.cos x) (Double.cosh y))
+                    (Double.neg (* (Double.sin x) (Double.sinh y))))))
+
+  (doc tan "Calculates the complex tangent.")
+  (defn tan [a] (Complex./ &(Complex.sin a) &(Complex.cos a)))
+
+  ;; --- Inverse Trigonometric ---
+
+  (doc asin "Calculates the complex inverse sine.")
+  (defn asin [z]
+    (let [iz (Complex.* &(Complex.i) z)
+          z2 (Complex.* z z)
+          one-minus-z2 (Complex.- &(Complex.one) &z2)
+          root (Complex.sqrt &one-minus-z2)
+          sum (Complex.+ &iz &root)
+          log-val (Complex.ln &sum)
+          neg-i (Complex.init 0.0 -1.0)]
+      (Complex.* &neg-i &log-val)))
+
+  (doc acos "Calculates the complex inverse cosine.")
+  (defn acos [z]
+    (let [z2 (Complex.* z z)
+          one-minus-z2 (Complex.- &(Complex.one) &z2)
+          i-root (Complex.* &(Complex.i) &(Complex.sqrt &one-minus-z2))
+          sum (Complex.+ z &i-root)
+          log-val (Complex.ln &sum)
+          neg-i (Complex.init 0.0 -1.0)]
+      (Complex.* &neg-i &log-val)))
+
+  (doc atan "Calculates the complex inverse tangent.")
+  (defn atan [z]
+    (let [iz (Complex.* &(Complex.i) z)
+          one-minus-iz (Complex.- &(Complex.one) &iz)
+          one-plus-iz (Complex.+ &(Complex.one) &iz)
+          log1 (Complex.ln &one-minus-iz)
+          log2 (Complex.ln &one-plus-iz)
+          diff (Complex.- &log1 &log2)
+          i-over-two (Complex.init 0.0 0.5)]
+      (Complex.* &i-over-two &diff)))
+
+  ;; --- Hyperbolic ---
+
+  (doc sinh "Calculates the complex hyperbolic sine.")
+  (defn sinh [a]
+    (let [x @(Complex.real a)
+          y @(Complex.imag a)]
+      (Complex.init (* (Double.sinh x) (Double.cos y))
+                    (* (Double.cosh x) (Double.sin y)))))
+
+  (doc cosh "Calculates the complex hyperbolic cosine.")
+  (defn cosh [a]
+    (let [x @(Complex.real a)
+          y @(Complex.imag a)]
+      (Complex.init (* (Double.cosh x) (Double.cos y))
+                    (* (Double.sinh x) (Double.sin y)))))
+
+  (doc tanh "Calculates the complex hyperbolic tangent.")
+  (defn tanh [a] (Complex./ &(Complex.sinh a) &(Complex.cosh a)))
+
+  ;; --- Inverse Hyperbolic ---
+
+  (doc asinh "Calculates the complex inverse hyperbolic sine.")
+  (defn asinh [z]
+    (let [z2 (Complex.* z z)
+          sum-one (Complex.+ &z2 &(Complex.one))
+          root (Complex.sqrt &sum-one)
+          sum (Complex.+ z &root)]
+      (Complex.ln &sum)))
+
+  (doc acosh "Calculates the complex inverse hyperbolic cosine.")
+  (defn acosh [z]
+    (let [z2 (Complex.* z z)
+          sub-one (Complex.- &z2 &(Complex.one))
+          root (Complex.sqrt &sub-one)
+          sum (Complex.+ z &root)]
+      (Complex.ln &sum)))
+
+  (doc atanh "Calculates the complex inverse hyperbolic tangent.")
+  (defn atanh [z]
+    (let [one-plus-z (Complex.+ &(Complex.one) z)
+          one-minus-z (Complex.- &(Complex.one) z)
+          log1 (Complex.ln &one-plus-z)
+          log2 (Complex.ln &one-minus-z)
+          diff (Complex.- &log1 &log2)]
+      (Complex.scalar-mul &diff 0.5)))
+
+  ;; --- Comparison ---
+
+  (doc = "Performs structural equality comparison.")
+  (defn = [a b]
+    (and
+      (Double.= @(Complex.real a) @(Complex.real b))
+      (Double.= @(Complex.imag a) @(Complex.imag b))))
+  (implements = Complex.=)
+
+  (doc approx
+    "Performs approximate equality comparison based on magnitude of difference.")
+  (defn approx [a b epsilon]
+    (let [diff (Complex.- a b)] (< (Complex.abs &diff) epsilon)))
+
+  ;; --- Utilities ---
+
+  (doc str "Converts a complex number to a string in 'a + bi' format.")
+  (defn str [a]
+    (let [r @(Complex.real a)
+          im @(Complex.imag a)
+          r-str (Double.str r)
+          i-abs-str (Double.str (Double.abs im))
+          sign (if (Double.< im 0.0) @" - " @" + ")
+          suffix @"i"
+          s1 (String.append &r-str &sign)
+          s2 (String.append &i-abs-str &suffix)]
+      (String.append &s1 &s2))))

@@ -1,0 +1,382 @@
+(register-type SimdFloat "simd_float")
+(register-type SimdMask "simd_mask")
+(register-type SimdInt "simd_int")
+(register-type SimdMat4 "simd_mat4")
+(register lane-width Int "SIMD_LANES")
+(register lane-alignment Int "SIMD_ALIGN")
+
+(relative-include "simd.h")
+
+(defmodule Simd
+  (defn width [] lane-width)
+  (defn alignment [] lane-alignment)
+
+  ;; Splats & Constants
+  (deftemplate splat
+               (Fn [Float] SimdFloat)
+               "simd_float $NAME(float val)"
+               "$DECL { return simd_splat(val); }")
+
+  (defn zero [] (Simd.splat 0f))
+  (defn one [] (Simd.splat 1f))
+
+  (deftemplate init-4
+               (Fn [Float Float Float Float] SimdFloat)
+               "simd_float $NAME(float x0, float x1, float x2, float x3)"
+               "$DECL { return simd_init_4(x0, x1, x2, x3); }")
+
+  (deftemplate get
+               (Fn [SimdFloat Int] Float)
+               "float $NAME(simd_float val, int idx)"
+               "$DECL { return simd_get(val, idx); }")
+
+  (deftemplate set
+               (Fn [SimdFloat Int Float] SimdFloat)
+               "simd_float $NAME(simd_float val, int idx, float element)"
+               "$DECL { return simd_set(val, idx, element); }")
+
+  ;; Pointer Loads & Stores
+  (deftemplate load
+               (Fn [(Ptr Float)] SimdFloat)
+               "simd_float $NAME(const float *ptr)"
+               "$DECL { return simd_load(ptr); }")
+
+  (deftemplate store!
+               (Fn [(Ptr Float) SimdFloat] ())
+               "void $NAME(float *ptr, simd_float val)"
+               "$DECL { simd_store(ptr, val); }")
+
+  (deftemplate load-aligned
+               (Fn [(Ptr Float)] SimdFloat)
+               "simd_float $NAME(const float *ptr)"
+               "$DECL { return simd_load_aligned(ptr); }")
+
+  (deftemplate store-aligned!
+               (Fn [(Ptr Float) SimdFloat] ())
+               "void $NAME(float *ptr, simd_float val)"
+               "$DECL { simd_store_aligned(ptr, val); }")
+
+  (deftemplate load-n
+               (Fn [(Ptr Float) Int] SimdFloat)
+               "simd_float $NAME(const float *ptr, int count)"
+               "$DECL { return simd_load_n(ptr, count); }")
+
+  (deftemplate store-n!
+               (Fn [(Ptr Float) SimdFloat Int] ())
+               "void $NAME(float *ptr, simd_float val, int count)"
+               "$DECL { simd_store_n(ptr, val, count); }")
+
+  ;; Safe Array Helpers
+  (defn load-from-array [arr]
+    (Simd.load-n (Array.unsafe-raw arr) (Array.length arr)))
+
+  (defn store-to-array! [arr v]
+    (Simd.store-n! (Array.unsafe-raw arr) v (Array.length arr)))
+
+  ;; Arithmetic & Operations
+  (deftemplate add
+               (Fn [SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_add(a, b); }")
+
+  (deftemplate sub
+               (Fn [SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_sub(a, b); }")
+
+  (deftemplate mul
+               (Fn [SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_mul(a, b); }")
+
+  (deftemplate div
+               (Fn [SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_div(a, b); }")
+
+  (deftemplate neg
+               (Fn [SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float val)"
+               "$DECL { return simd_neg(val); }")
+
+  (implements + Simd.add)
+  (implements - Simd.sub)
+  (implements * Simd.mul)
+  (implements / Simd.div)
+  (implements neg Simd.neg)
+  (implements zero Simd.zero)
+
+  ;; Comparisons & Selection
+  (deftemplate cmp-lt
+               (Fn [SimdFloat SimdFloat] SimdMask)
+               "simd_mask $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_cmp_lt(a, b); }")
+
+  (deftemplate cmp-gt
+               (Fn [SimdFloat SimdFloat] SimdMask)
+               "simd_mask $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_cmp_gt(a, b); }")
+
+  (deftemplate cmp-eq
+               (Fn [SimdFloat SimdFloat] SimdMask)
+               "simd_mask $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_cmp_eq(a, b); }")
+
+  (deftemplate select
+               (Fn [SimdMask SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_mask mask, simd_float a, simd_float b)"
+               "$DECL { return simd_select(mask, a, b); }")
+
+  ;; Vector Math
+  (deftemplate fma
+               (Fn [SimdFloat SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b, simd_float c)"
+               "$DECL { return simd_fma(a, b, c); }")
+
+  (deftemplate abs
+               (Fn [SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float val)"
+               "$DECL { return simd_abs(val); }")
+
+  (deftemplate sqrt
+               (Fn [SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float val)"
+               "$DECL { return simd_sqrt(val); }")
+
+  (deftemplate rsqrt
+               (Fn [SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float val)"
+               "$DECL { return simd_rsqrt(val); }")
+
+  (deftemplate min
+               (Fn [SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_min(a, b); }")
+
+  (deftemplate max
+               (Fn [SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_max(a, b); }")
+
+  (deftemplate clamp
+               (Fn [SimdFloat SimdFloat SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float v, simd_float min_v, simd_float max_v)"
+               "$DECL { return simd_clamp(v, min_v, max_v); }")
+
+  ;; Geometry Primitives
+  (deftemplate dot
+               (Fn [SimdFloat SimdFloat] Float)
+               "float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_dot(a, b); }")
+
+  (deftemplate dot-4
+               (Fn [SimdFloat SimdFloat] Float)
+               "float $NAME(simd_float a, simd_float b)"
+               "$DECL { return simd_dot_4(a, b); }")
+
+  (deftemplate len-4
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_len_4(val); }")
+
+  (deftemplate normalize-4
+               (Fn [SimdFloat] SimdFloat)
+               "simd_float $NAME(simd_float val)"
+               "$DECL { return simd_normalize_4(val); }")
+
+  (deftemplate batch-binop
+               (Fn
+                 [(Ptr Float) (Ptr Float) (Ptr Float) Int (Ptr ()) (Ptr ())]
+                 ())
+               "void $NAME(float *dst, const float *a, const float *b, int count, void *v_fn, void *s_fn)"
+               "$DECL { simd_batch_binop(dst, a, b, count, (simd_binop_fn)v_fn, (scalar_binop_fn)s_fn); }")
+
+  ;; Reductions
+  (deftemplate sum
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_sum(val); }")
+
+  (deftemplate sum-4
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_sum_4(val); }")
+
+  (deftemplate min-4
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_min_4(val); }")
+
+  (deftemplate max-4
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_max_4(val); }")
+
+  (deftemplate reduce-min
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_reduce_min(val); }")
+
+  (deftemplate reduce-max
+               (Fn [SimdFloat] Float)
+               "float $NAME(simd_float val)"
+               "$DECL { return simd_reduce_max(val); }")
+
+  ;; Aligned Memory Allocators
+  (deftemplate alloc-aligned
+               (Fn [Int Int] (Ptr Float))
+               "float* $NAME(int count, int align)"
+               "$DECL { return simd_alloc_aligned(count, align); }")
+
+  (deftemplate free-aligned
+               (Fn [(Ptr Float)] ())
+               "void $NAME(float *ptr)"
+               "$DECL { simd_free_aligned(ptr); }")
+
+  ;; Vector-Scalar Helpers
+  (defn add-scalar [v s] (Simd.add v (Simd.splat s)))
+  (defn sub-scalar [v s] (Simd.sub v (Simd.splat s)))
+  (defn mul-scalar [v s] (Simd.mul v (Simd.splat s)))
+  (defn div-scalar [v s] (Simd.div v (Simd.splat s)))
+
+  ;; --- Integer SIMD Operations ---
+  (deftemplate int-splat
+               (Fn [Int] SimdInt)
+               "simd_int $NAME(int val)"
+               "$DECL { return simd_int_splat(val); }")
+
+  (deftemplate int-get
+               (Fn [SimdInt Int] Int)
+               "int $NAME(simd_int val, int idx)"
+               "$DECL { return simd_int_get(val, idx); }")
+
+  (deftemplate int-set
+               (Fn [SimdInt Int Int] SimdInt)
+               "simd_int $NAME(simd_int val, int idx, int element)"
+               "$DECL { return simd_int_set(val, idx, element); }")
+
+  (deftemplate int-load
+               (Fn [(Ptr Int)] SimdInt)
+               "simd_int $NAME(const int *ptr)"
+               "$DECL { return simd_int_load(ptr); }")
+
+  (deftemplate int-store!
+               (Fn [(Ptr Int) SimdInt] ())
+               "void $NAME(int *ptr, simd_int val)"
+               "$DECL { simd_int_store(ptr, val); }")
+
+  (deftemplate bit-and
+               (Fn [SimdInt SimdInt] SimdInt)
+               "simd_int $NAME(simd_int a, simd_int b)"
+               "$DECL { return simd_and(a, b); }")
+
+  (deftemplate bit-or
+               (Fn [SimdInt SimdInt] SimdInt)
+               "simd_int $NAME(simd_int a, simd_int b)"
+               "$DECL { return simd_or(a, b); }")
+
+  (deftemplate bit-xor
+               (Fn [SimdInt SimdInt] SimdInt)
+               "simd_int $NAME(simd_int a, simd_int b)"
+               "$DECL { return simd_xor(a, b); }")
+
+  (deftemplate bit-not
+               (Fn [SimdInt] SimdInt)
+               "simd_int $NAME(simd_int a)"
+               "$DECL { return simd_not(a); }")
+
+  ;; Conversions
+  (deftemplate float-to-int
+               (Fn [SimdFloat] SimdInt)
+               "simd_int $NAME(simd_float a)"
+               "$DECL { return simd_float_to_int(a); }")
+
+  (deftemplate int-to-float
+               (Fn [SimdInt] SimdFloat)
+               "simd_float $NAME(simd_int a)"
+               "$DECL { return simd_int_to_float(a); }")
+
+  ;; Gather / Scatter
+  (deftemplate gather
+               (Fn [(Ptr Float) SimdInt] SimdFloat)
+               "simd_float $NAME(const float *base, simd_int indices)"
+               "$DECL { return simd_gather(base, indices); }")
+
+  (deftemplate scatter!
+               (Fn [(Ptr Float) SimdInt SimdFloat] ())
+               "void $NAME(float *base, simd_int indices, simd_float val)"
+               "$DECL { simd_scatter(base, indices, val); }")
+
+  ;; 4x4 Matrix Transformation
+  (deftemplate mat4-make
+               (Fn [SimdFloat SimdFloat SimdFloat SimdFloat] SimdMat4)
+               "simd_mat4 $NAME(simd_float c0, simd_float c1, simd_float c2, simd_float c3)"
+               "$DECL { return simd_mat4_make(c0, c1, c2, c3); }")
+
+  (deftemplate mat4-get-col
+               (Fn [(Ref SimdMat4) Int] SimdFloat)
+               "simd_float $NAME(const simd_mat4 *m, int idx)"
+               "$DECL { return m->cols[idx]; }")
+
+  (deftemplate mat4-mul-vec4
+               (Fn [(Ref SimdMat4) SimdFloat] SimdFloat)
+               "simd_float $NAME(const simd_mat4 *m, simd_float v)"
+               "$DECL { return simd_mat4_mul_vec4(m, v); }"))
+
+(defmodule SimdFloat
+  (deftemplate copy
+               (Fn [(Ref SimdFloat q)] SimdFloat)
+               "simd_float $NAME(const simd_float *ptr)"
+               "$DECL { return *ptr; }")
+  (implements copy SimdFloat.copy)
+
+  (defn = [a b]
+    (let-do [res true]
+      (for [i 0 lane-width]
+        (when (/= (Simd.get @a i) (Simd.get @b i)) (set! res false)))
+      res))
+  (implements = SimdFloat.=)
+
+  (deftemplate str
+               (Fn [(Ref SimdFloat)] String)
+               "String $NAME(const simd_float *val)"
+               "$DECL {
+        char buf[256];
+        int offset = snprintf(buf, sizeof(buf), \"Simd[\");
+        for(int i = 0; i < SIMD_LANES; i++) {
+            offset += snprintf(buf + offset, sizeof(buf) - offset, i == 0 ? \"%.3f\" : \", %.3f\", (*val)[i]);
+        }
+        snprintf(buf + offset, sizeof(buf) - offset, \"]\");
+        return Carp_allocate_string(buf);
+    }")
+  (implements str SimdFloat.str)
+  (implements prn SimdFloat.str))
+
+(defmodule SimdInt
+  (deftemplate copy
+               (Fn [(Ref SimdInt q)] SimdInt)
+               "simd_int $NAME(const simd_int *ptr)"
+               "$DECL { return *ptr; }")
+  (implements copy SimdInt.copy)
+
+  (defn = [a b]
+    (let-do [res true]
+      (for [i 0 lane-width]
+        (when (/= (Simd.int-get @a i) (Simd.int-get @b i)) (set! res false)))
+      res))
+  (implements = SimdInt.=)
+
+  (deftemplate str
+               (Fn [(Ref SimdInt)] String)
+               "String $NAME(const simd_int *val)"
+               "$DECL {
+        char buf[256];
+        int offset = snprintf(buf, sizeof(buf), \"SimdInt[\");
+        for(int i = 0; i < SIMD_LANES; i++) {
+            offset += snprintf(buf + offset, sizeof(buf) - offset, i == 0 ? \"%d\" : \", %d\", (*val)[i]);
+        }
+        snprintf(buf + offset, sizeof(buf) - offset, \"]\");
+        return Carp_allocate_string(buf);
+    }")
+  (implements str SimdInt.str)
+  (implements prn SimdInt.str))

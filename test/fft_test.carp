@@ -1,0 +1,438 @@
+(load "Test.carp")
+(use Test)
+(load "fft.carp")
+(load "window.carp")
+(load "spectrum.carp")
+(load "convolution.carp")
+(use Complex)
+(use FFT)
+(use Window)
+(use Spectrum)
+(use Convolution)
+
+(deftest fft-test
+  (let [c0 (Complex.zero)
+        c1 (Complex.one)
+        ci (Complex.i)
+        ;; Test basics
+        s1 (assert-equal fft-test 0.0 @(Complex.real &c0) "Complex.zero real")
+        s2 (assert-equal &s1 0.0 @(Complex.imag &c0) "Complex.zero imag")
+        s3 (assert-equal &s2 1.0 @(Complex.real &c1) "Complex.one real")
+        s4 (assert-equal &s3 0.0 @(Complex.imag &c1) "Complex.one imag")
+        s5 (assert-equal &s4 0.0 @(Complex.real &ci) "Complex.i real")
+        s6 (assert-equal &s5 1.0 @(Complex.imag &ci) "Complex.i imag")
+        ;; Arithmetic
+        c-add (Complex.+ &c1 &ci)
+        ; 1 + i
+        s7 (assert-equal &s6 1.0 @(Complex.real &c-add) "Complex.add real")
+        s8 (assert-equal &s7 1.0 @(Complex.imag &c-add) "Complex.add imag")
+        c2 (Complex.init 2.0 3.0)
+        c3 (Complex.init 4.0 -1.0)
+        c-sub (Complex.- &c2 &c3)
+        ; -2 + 4i
+        s9 (assert-equal &s8 -2.0 @(Complex.real &c-sub) "Complex.sub real")
+        s10 (assert-equal &s9 4.0 @(Complex.imag &c-sub) "Complex.sub imag")
+        c-mul (Complex.* &c2 &c3)
+        ; (2+3i)*(4-i) = 8 - 2i + 12i + 3 = 11 + 10i
+        s11 (assert-equal &s10 11.0 @(Complex.real &c-mul) "Complex.mul real")
+        s12 (assert-equal &s11 10.0 @(Complex.imag &c-mul) "Complex.imag")
+        c-div (Complex./ &c-mul &c3)
+        ; (11+10i)/(4-i) should be 2+3i
+        s13 (assert-true &s12
+          (Complex.approx &c-div &c2 0.00001)
+          "Complex.div approx=")
+        ;; Magnitude / Phase
+        s14 (assert-equal &s13
+          25.0
+          (Complex.norm &(Complex.init 3.0 4.0))
+          "magnitude-sq")
+        s15 (assert-equal &s14
+          5.0
+          (Complex.abs &(Complex.init 3.0 4.0))
+          "magnitude")
+        ;; FFT helper functions
+        s16 (assert-true &s15 (FFT.power-of-two? 1) "power-of-two? 1")
+        s17 (assert-true &s16 (FFT.power-of-two? 64) "power-of-two? 64")
+        s18 (assert-false &s17 (FFT.power-of-two? 0) "power-of-two? 0")
+        s19 (assert-false &s18 (FFT.power-of-two? 15) "power-of-two? 15")
+        s20 (assert-equal &s19
+          16
+          (FFT.next-power-of-two 15)
+          "next-power-of-two 15")
+        s21 (assert-equal &s20
+          16
+          (FFT.next-power-of-two 16)
+          "next-power-of-two 16")
+        ;; 1D FFT: Transform of [1.0, 1.0, 1.0, 1.0] (DC component)
+        ;; Result should be [4.0, 0.0, 0.0, 0.0]
+        sig-dc (Array.replicate 4 &(Complex.init 1.0 0.0))
+        fft-res (FFT.try-fft &sig-dc)
+        s22 (assert-true &s21 (Result.success? &fft-res) "FFT returns Success")
+        fft-arr (Result.unsafe-from-success fft-res)
+        s23 (assert-true &s22
+          (Complex.approx (Array.unsafe-nth &fft-arr 0)
+                          &(Complex.init 4.0 0.0)
+                          0.00001)
+          "FFT DC term is 4.0")
+        s24 (assert-true &s23
+          (Complex.approx (Array.unsafe-nth &fft-arr 1) &(Complex.zero) 0.00001)
+          "FFT DC term 1 is 0")
+        s25 (assert-true &s24
+          (Complex.approx (Array.unsafe-nth &fft-arr 2) &(Complex.zero) 0.00001)
+          "FFT DC term 2 is 0")
+        s26 (assert-true &s25
+          (Complex.approx (Array.unsafe-nth &fft-arr 3) &(Complex.zero) 0.00001)
+          "FFT DC term 3 is 0")
+        ;; FFT and IFFT roundtrip
+        sig-rand [(Complex.init 1.0 0.5)
+                  (Complex.init -2.0 1.2)
+                  (Complex.init 3.5 -0.5)
+                  (Complex.init 0.0 4.0)
+                  (Complex.init 1.0 0.0)
+                  (Complex.init 2.0 -2.0)
+                  (Complex.init -1.0 3.0)
+                  (Complex.init 0.5 -0.5)]
+        fft-rand-res (FFT.try-fft &sig-rand)
+        fft-rand-arr (Result.unsafe-from-success fft-rand-res)
+        ifft-rand-res (FFT.try-ifft &fft-rand-arr)
+        ifft-rand-arr (Result.unsafe-from-success ifft-rand-res)
+        s27 (assert-true &s26
+          (Complex.approx (Array.unsafe-nth &ifft-rand-arr 0)
+                          (Array.unsafe-nth &sig-rand 0)
+                          0.00001)
+          "roundtrip element 0")
+        s28 (assert-true &s27
+          (Complex.approx (Array.unsafe-nth &ifft-rand-arr 4)
+                          (Array.unsafe-nth &sig-rand 4)
+                          0.00001)
+          "roundtrip element 4")
+        s29 (assert-true &s28
+          (Complex.approx (Array.unsafe-nth &ifft-rand-arr 7)
+                          (Array.unsafe-nth &sig-rand 7)
+                          0.00001)
+          "roundtrip element 7")
+        ;; Real FFT (rfft and irfft)
+        real-sig [1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0]
+        rfft-arr (FFT.rfft-one-sided &real-sig)
+        irfft-arr (FFT.irfft &rfft-arr)
+        s30 (assert-equal &s29
+          5
+          (Array.length &rfft-arr)
+          "rfft-one-sided length is 5")
+        s31 (assert-true &s30
+          (< (Double.abs (- @(Array.unsafe-nth &irfft-arr 0) 1.0)) 0.00001)
+          "irfft roundtrip element 0")
+        s32 (assert-true &s31
+          (< (Double.abs (- @(Array.unsafe-nth &irfft-arr 4) 5.0)) 0.00001)
+          "irfft roundtrip element 4")
+        s33 (assert-true &s32
+          (< (Double.abs (- @(Array.unsafe-nth &irfft-arr 7) 8.0)) 0.00001)
+          "irfft roundtrip element 7")
+        ;; 2D FFT & IFFT roundtrip
+        grid-2d [(Complex.init 1.0 0.0)
+                 (Complex.init 2.0 0.0)
+                 (Complex.init 3.0 0.0)
+                 (Complex.init 4.0 0.0)
+                 (Complex.init 5.0 0.0)
+                 (Complex.init 6.0 0.0)
+                 (Complex.init 7.0 0.0)
+                 (Complex.init 8.0 0.0)
+                 (Complex.init 9.0 0.0)
+                 (Complex.init 10.0 0.0)
+                 (Complex.init 11.0 0.0)
+                 (Complex.init 12.0 0.0)
+                 (Complex.init 13.0 0.0)
+                 (Complex.init 14.0 0.0)
+                 (Complex.init 15.0 0.0)
+                 (Complex.init 16.0 0.0)]
+        fft2d-res (FFT.try-fft2d &grid-2d 4 4)
+        fft2d-arr (Result.unsafe-from-success fft2d-res)
+        ifft2d-res (FFT.try-ifft2d &fft2d-arr 4 4)
+        ifft2d-arr (Result.unsafe-from-success ifft2d-res)
+        s35 (assert-true &s33
+          (Complex.approx (Array.unsafe-nth &ifft2d-arr 0)
+                          (Array.unsafe-nth &grid-2d 0)
+                          0.00001)
+          "2D roundtrip element 0")
+        s36 (assert-true &s35
+          (Complex.approx (Array.unsafe-nth &ifft2d-arr 7)
+                          (Array.unsafe-nth &grid-2d 7)
+                          0.00001)
+          "2D roundtrip element 7")
+        s37 (assert-true &s36
+          (Complex.approx (Array.unsafe-nth &ifft2d-arr 15)
+                          (Array.unsafe-nth &grid-2d 15)
+                          0.00001)
+          "2D roundtrip element 15")
+        ;; Windowing tests
+        hann-win (Window.hann 8)
+        s38 (assert-equal &s37 8 (Array.length &hann-win) "Hann window length")
+        s39 (assert-true &s38
+          (< (Double.abs (- @(Array.unsafe-nth &hann-win 0) 0.0)) 0.00001)
+          "Hann start is 0")
+        s40 (assert-true &s39
+          (< (Double.abs (- @(Array.unsafe-nth &hann-win 7) 0.0)) 0.00001)
+          "Hann end is 0")
+        hamming-win (Window.hamming 8)
+        s41 (assert-equal &s40
+          8
+          (Array.length &hamming-win)
+          "Hamming window length")
+        blackman-win (Window.blackman 8)
+        s42 (assert-equal &s41
+          8
+          (Array.length &blackman-win)
+          "Blackman window length")
+        rect-win (Window.rectangular 8)
+        s43 (assert-equal &s42
+          8
+          (Array.length &rect-win)
+          "Rectangular window length")
+        s44 (assert-equal &s43
+          1.0
+          @(Array.unsafe-nth &rect-win 4)
+          "Rectangular element value is 1.0")
+        bartlett-win (Window.bartlett 9)
+        s45 (assert-equal &s44
+          9
+          (Array.length &bartlett-win)
+          "Bartlett window length")
+        s46 (assert-true &s45
+          (< (Double.abs (- @(Array.unsafe-nth &bartlett-win 0) 0.0)) 0.00001)
+          "Bartlett start is 0")
+        s47 (assert-true &s46
+          (< (Double.abs (- @(Array.unsafe-nth &bartlett-win 4) 1.0)) 0.00001)
+          "Bartlett peak center is 1.0")
+        gaussian-win (Window.gaussian 8 0.4)
+        s48 (assert-equal &s47
+          8
+          (Array.length &gaussian-win)
+          "Gaussian window length")
+        flattop-win (Window.flat-top 8)
+        s49 (assert-equal &s48
+          8
+          (Array.length &flattop-win)
+          "Flat Top window length")
+        ;; --- DSP / Verification Test Cases (Point 13) ---
+        ;; 1. Impulse Test
+        impulse [1.0 0.0 0.0 0.0]
+        impulse-fft (FFT.rfft &impulse)
+        s50 (assert-true &s49
+          (Complex.approx (Array.unsafe-nth &impulse-fft 0)
+                          &(Complex.init 1.0 0.0)
+                          0.00001)
+          "Impulse FFT DC is 1.0")
+        s51 (assert-true &s50
+          (Complex.approx (Array.unsafe-nth &impulse-fft 1)
+                          &(Complex.init 1.0 0.0)
+                          0.00001)
+          "Impulse FFT F1 is 1.0")
+        s52 (assert-true &s51
+          (Complex.approx (Array.unsafe-nth &impulse-fft 2)
+                          &(Complex.init 1.0 0.0)
+                          0.00001)
+          "Impulse FFT F2 is 1.0")
+        s53 (assert-true &s52
+          (Complex.approx (Array.unsafe-nth &impulse-fft 3)
+                          &(Complex.init 1.0 0.0)
+                          0.00001)
+          "Impulse FFT F3 is 1.0")
+        ;; 2. Alternating Test
+        alternating [1.0 -1.0 1.0 -1.0]
+        alt-fft (FFT.rfft &alternating)
+        s54 (assert-true &s53
+          (Complex.approx (Array.unsafe-nth &alt-fft 0) &(Complex.zero) 0.00001)
+          "Alternating FFT F0 is 0")
+        s55 (assert-true &s54
+          (Complex.approx (Array.unsafe-nth &alt-fft 1) &(Complex.zero) 0.00001)
+          "Alternating FFT F1 is 0")
+        s56 (assert-true &s55
+          (Complex.approx (Array.unsafe-nth &alt-fft 2)
+                          &(Complex.init 4.0 0.0)
+                          0.00001)
+          "Alternating FFT F2 is 4.0 (Nyquist spike)")
+        s57 (assert-true &s56
+          (Complex.approx (Array.unsafe-nth &alt-fft 3) &(Complex.zero) 0.00001)
+          "Alternating FFT F3 is 0")
+        ;; 3. Parseval Theorem Test
+        ;; Sum of squares of input = (Sum of squares of FFT output) / N
+        parseval-sig [1.5 2.5 -0.5 4.0]
+        sig-energy (+ (+ (+ (* 1.5 1.5) (* 2.5 2.5)) (* -0.5 -0.5)) (* 4.0 4.0))
+        ; 24.75
+        parseval-fft (FFT.rfft &parseval-sig)
+        fft-energy (/
+          (+
+            (+
+              (+
+                (Complex.norm (Array.unsafe-nth &parseval-fft 0))
+                (Complex.norm (Array.unsafe-nth &parseval-fft 1)))
+              (Complex.norm (Array.unsafe-nth &parseval-fft 2)))
+            (Complex.norm (Array.unsafe-nth &parseval-fft 3)))
+          4.0)
+        s58 (assert-true &s57
+          (< (Double.abs (- sig-energy fft-energy)) 0.00001)
+          "Parseval's theorem holds")
+        ;; --- Spectrum Module Test Cases (Point 12) ---
+        spec-data [(Complex.init 3.0 4.0) (Complex.init 0.0 -5.0)]
+        spec-mag (Spectrum.magnitude &spec-data)
+        s59 (assert-equal &s58
+          5.0
+          @(Array.unsafe-nth &spec-mag 0)
+          "Spectrum.magnitude first element")
+        s60 (assert-equal &s59
+          5.0
+          @(Array.unsafe-nth &spec-mag 1)
+          "Spectrum.magnitude second element")
+        spec-power (Spectrum.power &spec-data)
+        s61 (assert-equal &s60
+          25.0
+          @(Array.unsafe-nth &spec-power 0)
+          "Spectrum.power first element")
+        spec-db (Spectrum.db &spec-data)
+        s62 (assert-true &s61
+          (<
+            (Double.abs
+              (- @(Array.unsafe-nth &spec-db 0)
+                 (* 20.0 (/ (Double.log 5.0) (Double.log 10.0)))))
+            0.00001)
+          "Spectrum.db conversion matches 20 * log10(5.0)")
+        ;; Spectrum phase test (Point 4 of new feedback)
+        spec-phase (Spectrum.phase &spec-data)
+        s63 (assert-true &s62
+          (<
+            (Double.abs
+              (- @(Array.unsafe-nth &spec-phase 0) (Double.atan2 4.0 3.0)))
+            0.00001)
+          "Spectrum.phase first element")
+        s64 (assert-true &s63
+          (<
+            (Double.abs
+              (- @(Array.unsafe-nth &spec-phase 1)
+                 (Double.neg (/ Double.pi 2.0))))
+            0.00001)
+          "Spectrum.phase second element (arg of -5i is -pi/2)")
+        ;; --- Convolution Module Test Cases (Point 6) ---
+        ;; 1. Linear Convolution
+        conv-a [1.0 2.0 3.0]
+        conv-b [0.0 1.0 0.5]
+        conv-res (Convolution.convolve &conv-a &conv-b)
+        ; should be [0.0 1.0 2.5 4.0 1.5]
+        s65 (assert-equal &s64
+          5
+          (Array.length &conv-res)
+          "Linear convolution length is 5")
+        s66 (assert-true &s65
+          (< (Double.abs (- @(Array.unsafe-nth &conv-res 0) 0.0)) 0.00001)
+          "convolve element 0 is 0.0")
+        s67 (assert-true &s66
+          (< (Double.abs (- @(Array.unsafe-nth &conv-res 1) 1.0)) 0.00001)
+          "convolve element 1 is 1.0")
+        s68 (assert-true &s67
+          (< (Double.abs (- @(Array.unsafe-nth &conv-res 2) 2.5)) 0.00001)
+          "convolve element 2 is 2.5")
+        s69 (assert-true &s68
+          (< (Double.abs (- @(Array.unsafe-nth &conv-res 3) 4.0)) 0.00001)
+          "convolve element 3 is 4.0")
+        s70 (assert-true &s69
+          (< (Double.abs (- @(Array.unsafe-nth &conv-res 4) 1.5)) 0.00001)
+          "convolve element 4 is 1.5")
+        ;; 2. Circular Convolution
+        circ-a [(Complex.init 1.0 0.0) (Complex.init 2.0 0.0)]
+        circ-b [(Complex.init 3.0 0.0) (Complex.init 4.0 0.0)]
+        circ-res (Convolution.circular-convolve &circ-a &circ-b)
+        ; should be [11.0+0i 10.0+0i]
+        s71 (assert-true &s70
+          (Complex.approx (Array.unsafe-nth &circ-res 0)
+                          &(Complex.init 11.0 0.0)
+                          0.00001)
+          "circular convolve element 0")
+        s72 (assert-true &s71
+          (Complex.approx (Array.unsafe-nth &circ-res 1)
+                          &(Complex.init 10.0 0.0)
+                          0.00001)
+          "circular convolve element 1")
+        ;; 3. Cross-Correlation
+        corr-a [1.0 2.0]
+        corr-b [3.0 4.0]
+        corr-res (Convolution.cross-correlate &corr-a &corr-b)
+        ; should be [4.0 11.0 6.0]
+        s73 (assert-equal &s72
+          3
+          (Array.length &corr-res)
+          "Cross-correlation length is 3")
+        s74 (assert-true &s73
+          (< (Double.abs (- @(Array.unsafe-nth &corr-res 0) 4.0)) 0.00001)
+          "cross-correlate element 0 is 4.0")
+        s75 (assert-true &s74
+          (< (Double.abs (- @(Array.unsafe-nth &corr-res 1) 11.0)) 0.00001)
+          "cross-correlate element 1 is 11.0")
+        s76 (assert-true &s75
+          (< (Double.abs (- @(Array.unsafe-nth &corr-res 2) 6.0)) 0.00001)
+          "cross-correlate element 2 is 6.0")
+        ;; 4. Autocorrelation
+        auto-res (Convolution.autocorrelate &corr-a)
+        ; [2.0 5.0 2.0]
+        s77 (assert-true &s76
+          (< (Double.abs (- @(Array.unsafe-nth &auto-res 0) 2.0)) 0.00001)
+          "autocorrelate element 0")
+        s78 (assert-true &s77
+          (< (Double.abs (- @(Array.unsafe-nth &auto-res 1) 5.0)) 0.00001)
+          "autocorrelate element 1")
+        s79 (assert-true &s78
+          (< (Double.abs (- @(Array.unsafe-nth &auto-res 2) 2.0)) 0.00001)
+          "autocorrelate element 2")
+        ;; --- Frequency Axis Helpers Test (Point 3 of new feedback) ---
+        f-axis (FFT.frequency-axis 8 8000.0)
+        ; should be [0, 1000, 2000, 3000, 4000]
+        s80 (assert-equal &s79
+          5
+          (Array.length &f-axis)
+          "frequency-axis length is 5")
+        s81 (assert-true &s80
+          (< (Double.abs (- @(Array.unsafe-nth &f-axis 1) 1000.0)) 0.00001)
+          "frequency-axis bin 1 is 1000.0 Hz")
+        s82 (assert-true &s81
+          (< (Double.abs (- @(Array.unsafe-nth &f-axis 4) 4000.0)) 0.00001)
+          "frequency-axis Nyquist bin is 4000.0 Hz")
+        f-axis-full (FFT.frequency-axis-full 8 8000.0)
+        ; should be [0, 1000, 2000, 3000, -4000, -3000, -2000, -1000]
+        s83 (assert-equal &s82
+          8
+          (Array.length &f-axis-full)
+          "frequency-axis-full length is 8")
+        s84 (assert-true &s83
+          (< (Double.abs (- @(Array.unsafe-nth &f-axis-full 4) -4000.0)) 0.00001)
+          "frequency-axis-full Nyquist bin is -4000.0 Hz")
+        s85 (assert-true &s84
+          (< (Double.abs (- @(Array.unsafe-nth &f-axis-full 7) -1000.0)) 0.00001)
+          "frequency-axis-full last bin is -1000.0 Hz")
+        ;; --- Sine Wave Peak Validation Test (Point 5 of new feedback) ---
+        ;; N = 16, k = 2 (2 cycles). x[n] = sin(2 * pi * 2 * n / 16)
+        sine-sig (replicate 16 &0.0)
+        _unused (do
+          (for [i 0 16]
+            (let [theta (/
+                    (* 2.0 (* Double.pi (* 2.0 (Double.from-int i))))
+                    16.0)]
+              (Array.aset! &sine-sig i (Double.sin theta))))
+          ())
+        sine-fft (FFT.rfft-one-sided &sine-sig)
+        s86 (assert-equal &s85 9 (Array.length &sine-fft) "Sine FFT length is 9")
+        s87 (assert-true &s86
+          (< (Complex.abs (Array.unsafe-nth &sine-fft 0)) 0.00001)
+          "Sine FFT F0 is 0")
+        s88 (assert-true &s87
+          (< (Complex.abs (Array.unsafe-nth &sine-fft 1)) 0.00001)
+          "Sine FFT F1 is 0")
+        s89 (assert-true &s88
+          (<
+            (Double.abs (- (Complex.abs (Array.unsafe-nth &sine-fft 2)) 8.0))
+            0.00001)
+          "Sine FFT F2 magnitude is N/2 = 8.0 (peak)")
+        s90 (assert-true &s89
+          (< (Complex.abs (Array.unsafe-nth &sine-fft 3)) 0.00001)
+          "Sine FFT F3 is 0")
+        s91 (assert-true &s90
+          (< (Complex.abs (Array.unsafe-nth &sine-fft 8)) 0.00001)
+          "Sine FFT F8 is 0")]
+    s91))

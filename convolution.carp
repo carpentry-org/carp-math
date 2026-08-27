@@ -1,0 +1,78 @@
+(load "complex.carp")
+(load "fft.carp")
+
+(use Array)
+(use Double)
+
+(defmodule Convolution
+  (doc circular-convolve
+    "performs circular convolution on two complex arrays of the same length.")
+  (defn circular-convolve [a b]
+    (let [n (Array.length a)]
+      (do
+        (assert (= n (Array.length b)))
+        (let [fa (FFT.fft a)
+              fb (FFT.fft b)
+              fc (replicate n &(Complex.zero))]
+          (do
+            (for [i 0 n]
+              (Array.aset! &fc
+                           i
+                           (Complex.* (Array.unsafe-nth &fa i)
+                                      (Array.unsafe-nth &fb i))))
+            (FFT.ifft &fc))))))
+
+  (doc convolve "performs linear convolution on two real arrays.")
+  (defn convolve [a b]
+    (let [len-a (Array.length a)
+          len-b (Array.length b)
+          out-len (- (+ len-a len-b) 1)
+          fft-len (FFT.next-power-of-two out-len)
+          padded-a (FFT.pad-zero a fft-len)
+          padded-b (FFT.pad-zero b fft-len)
+          fa (FFT.rfft-one-sided &padded-a)
+          fb (FFT.rfft-one-sided &padded-b)
+          fc (replicate (Array.length &fa) &(Complex.zero))]
+      (do
+        (for [i 0 (Array.length &fa)]
+          (Array.aset! &fc
+                       i
+                       (Complex.* (Array.unsafe-nth &fa i)
+                                  (Array.unsafe-nth &fb i))))
+        (let [full-conv (FFT.irfft &fc)
+              out (replicate out-len &0.0)]
+          (do
+            (for [i 0 out-len]
+              (Array.aset! &out i @(Array.unsafe-nth &full-conv i)))
+            out)))))
+
+  (doc cross-correlate "performs cross-correlation on two real arrays.")
+  (defn cross-correlate [a b]
+    (let [len-a (Array.length a)
+          len-b (Array.length b)
+          out-len (- (+ len-a len-b) 1)
+          fft-len (FFT.next-power-of-two out-len)
+          padded-a (FFT.pad-zero a fft-len)
+          padded-b (FFT.pad-zero b fft-len)
+          fa (FFT.rfft-one-sided &padded-a)
+          fb (FFT.rfft-one-sided &padded-b)
+          fc (replicate (Array.length &fa) &(Complex.zero))]
+      (do
+        (for [i 0 (Array.length &fa)]
+          (let [conj-b (Complex.conj (Array.unsafe-nth &fb i))]
+            (Array.aset! &fc i (Complex.* (Array.unsafe-nth &fa i) &conj-b))))
+        (let [full-corr (FFT.irfft &fc)
+              out (replicate out-len &0.0)
+              neg-len (- len-b 1)]
+          (do
+            (for [i 0 neg-len]
+              (Array.aset! &out
+                           i
+                           @(Array.unsafe-nth &full-corr
+                                              (+ (- fft-len neg-len) i))))
+            (for [i 0 len-a]
+              (Array.aset! &out (+ neg-len i) @(Array.unsafe-nth &full-corr i)))
+            out)))))
+
+  (doc autocorrelate "performs autocorrelation on a real array.")
+  (defn autocorrelate [a] (cross-correlate a a)))

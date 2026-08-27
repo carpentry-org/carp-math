@@ -1,0 +1,50 @@
+(load "simd.carp")
+
+(defmodule SimdArray
+  ;; High-throughput in-place vector addition: dst = a + b
+  (defn add! [dst a b]
+    (let-do [len (Array.length dst)
+             lanes (Simd.width)
+             limit (- len (Int.mod len lanes))
+             p-dst (Array.unsafe-raw dst)
+             p-a (Array.unsafe-raw a)
+             p-b (Array.unsafe-raw b)
+             i 0]
+      (do
+        ;; 1. Process full SIMD register chunks
+        (while (< i limit)
+          (let [va (Simd.load (Pointer.add p-a (Long.from-int i)))
+                vb (Simd.load (Pointer.add p-b (Long.from-int i)))
+                vr (+ va vb)]
+            (do
+              (Simd.store! (Pointer.add p-dst (Long.from-int i)) vr)
+              (set! i (+ i lanes)))))
+        ;; 2. Process trailing remainder elements
+        (for [k limit len]
+          (Pointer.set (Pointer.add p-dst (Long.from-int k))
+                       (+
+                         (Pointer.to-value (Pointer.add p-a (Long.from-int k)))
+                         (Pointer.to-value (Pointer.add p-b (Long.from-int k)))))))))
+
+  ;; Vector-accelerated array sum
+  (defn sum [arr]
+    (let-do [len (Array.length arr)
+             lanes (Simd.width)
+             limit (- len (Int.mod len lanes))
+             p (Array.unsafe-raw arr)
+             acc (Simd.zero)
+             scalar-acc 0f
+             i 0]
+      (do
+        ;; Vector accumulator
+        (while (< i limit)
+          (do
+            (set! acc (+ acc (Simd.load (Pointer.add p (Long.from-int i)))))
+            (set! i (+ i lanes))))
+        (set! scalar-acc (Simd.sum acc))
+        ;; Scalar remainder
+        (for [k limit len]
+          (set! scalar-acc
+                (+ scalar-acc
+                   (Pointer.to-value (Pointer.add p (Long.from-int k))))))
+        scalar-acc))))

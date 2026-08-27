@@ -1,0 +1,57 @@
+(load "complex.carp")
+
+(use Array)
+(use Double)
+
+(defmodule Spectrum
+  (doc magnitude "returns the magnitude spectrum of the complex array.")
+  (defn magnitude [arr]
+    (let [n (Array.length arr)
+          out (replicate n &0.0)]
+      (do
+        (for [i 0 n] (Array.aset! &out i (Complex.abs (Array.unsafe-nth arr i))))
+        out)))
+
+  (doc power
+    "returns the power spectrum (squared magnitude) of the complex array.")
+  (defn power [arr]
+    (let [n (Array.length arr)
+          out (replicate n &0.0)]
+      (do
+        (for [i 0 n]
+          (Array.aset! &out i (Complex.norm (Array.unsafe-nth arr i))))
+        out)))
+
+  (doc phase
+    "returns the phase angle spectrum (in radians) of the complex array.")
+  (defn phase [arr]
+    (let [n (Array.length arr)
+          out (replicate n &0.0)]
+      (do
+        (for [i 0 n] (Array.aset! &out i (Complex.arg (Array.unsafe-nth arr i))))
+        out)))
+
+  (doc log-spectrum
+    "returns the natural log magnitude spectrum of the complex array.")
+  (defn log-spectrum [arr]
+    (let [n (Array.length arr)
+          out (replicate n &0.0)]
+      (do
+        (for [i 0 n]
+          (let [mag (Complex.abs (Array.unsafe-nth arr i))
+                clamped (if (< mag 0.000000000000001) 0.000000000000001 mag)]
+            (Array.aset! &out i (Double.log clamped))))
+        out)))
+
+  (doc db
+    "returns the decibel (dB) log-magnitude spectrum of the complex array: 20 * log10(magnitude). Clamps small values to avoid log(0).")
+  (defn db [arr]
+    (let [n (Array.length arr)
+          out (replicate n &0.0)]
+      (do
+        (for [i 0 n]
+          (let [mag (Complex.abs (Array.unsafe-nth arr i))
+                clamped (if (< mag 0.000000000000001) 0.000000000000001 mag)
+                val (* 20.0 (/ (Double.log clamped) (Double.log 10.0)))]
+            (Array.aset! &out i val)))
+        out))))

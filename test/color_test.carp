@@ -1,0 +1,42 @@
+(load "Test.carp")
+(use Test)
+(load "color.carp")
+(use Color)
+
+(defn approx [a b] (< (Double.abs (- a b)) 0.01))
+; Use looser tolerance for multi-space jumps
+
+(deftest color-test
+  (let [red-rgb (Color.red)
+        red-hsl (Color.to-hsl &red-rgb)
+        red-hsv (Color.to-hsv &red-rgb)
+        red-cmyk (Color.to-cmyk &red-rgb)
+        s1 (assert-equal color-test 1.0 @(RGB.r &red-rgb) "red is 1.0 red")
+        ;; HSL
+        s2 (assert-equal &s1 0.0 @(HSL.h &red-hsl) "red HSL hue is 0.0")
+        red-back-hsl (Color.from-hsl &red-hsl)
+        s3 (assert-true &s2 (approx @(RGB.r &red-back-hsl) 1.0) "HSL roundtrip")
+        ;; HSV
+        s4 (assert-equal &s3 0.0 @(HSV.h &red-hsv) "red HSV hue is 0.0")
+        red-back-hsv (Color.from-hsv &red-hsv)
+        s5 (assert-true &s4 (approx @(RGB.r &red-back-hsv) 1.0) "HSV roundtrip")
+        ;; CMYK
+        s6 (assert-equal &s5 0.0 @(CMYK.c &red-cmyk) "red CMYK cyan is 0.0")
+        s7 (assert-equal &s6 1.0 @(CMYK.m &red-cmyk) "red CMYK magenta is 1.0")
+        red-back-cmyk (Color.from-cmyk &red-cmyk)
+        s8 (assert-true &s7
+          (approx @(RGB.r &red-back-cmyk) 1.0)
+          "CMYK roundtrip")
+        ;; Byte conversion
+        gray (Color.from-bytes 128 128 128)
+        gray-bytes (Color.to-bytes &gray)
+        s9 (assert-equal &s8 128 @(unsafe-nth &gray-bytes 0) "byte conversion R")
+        ;; Hex
+        s10 (assert-equal &s9
+          "#ff0000"
+          &(Color.to-hex &(Color.red))
+          "to-hex red")
+        red-from-hex (Color.from-hex "#ff0000")
+        rfh (Result.unsafe-from-success red-from-hex)
+        s11 (assert-true &s10 (approx @(RGB.r &rfh) 1.0) "from-hex red R")]
+    s11))

@@ -1,0 +1,372 @@
+(load "Vector.carp")
+(use Double)
+(use Vector3)
+
+(doc Quaternion "represents a 3D rotation using a four-component complex number.
+Conventions: Hamilton product, Right-handed.")
+(deftype Quaternion [x Double
+                     y Double
+                     z Double
+                     w Double])
+
+(defmodule Quaternion
+  (defn new [x y z w] (Quaternion.init x y z w))
+  (defn identity [] (Quaternion.init 0.0 0.0 0.0 1.0))
+
+  (doc normalize
+    "returns a unit-length version of the quaternion to prevent rotation drift.")
+  (defn normalize [q]
+    (let [qx @(Quaternion.x q)
+          qy @(Quaternion.y q)
+          qz @(Quaternion.z q)
+          qw @(Quaternion.w q)
+          mag (sqrt (+ (+ (+ (* qx qx) (* qy qy)) (* qz qz)) (* qw qw)))]
+      (if (> mag 0.0)
+        (Quaternion.init (/ qx mag) (/ qy mag) (/ qz mag) (/ qw mag))
+        (Quaternion.identity))))
+
+  (doc conjugate "returns the conjugate (inverse for unit quaternions).")
+  (defn conjugate [q]
+    (Quaternion.init (- 0.0 @(Quaternion.x q))
+                     (- 0.0 @(Quaternion.y q))
+                     (- 0.0 @(Quaternion.z q))
+                     @(Quaternion.w q)))
+
+  (defn inverse [q] (Quaternion.conjugate q))
+
+  (doc add "adds two quaternions component-wise.")
+  (defn add [a b]
+    (Quaternion.init (+ @(Quaternion.x a) @(Quaternion.x b))
+                     (+ @(Quaternion.y a) @(Quaternion.y b))
+                     (+ @(Quaternion.z a) @(Quaternion.z b))
+                     (+ @(Quaternion.w a) @(Quaternion.w b))))
+
+  (doc scale "multiplies all components of a quaternion by a scalar.")
+  (defn scale [q s]
+    (Quaternion.init (* @(Quaternion.x q) s)
+                     (* @(Quaternion.y q) s)
+                     (* @(Quaternion.z q) s)
+                     (* @(Quaternion.w q) s)))
+
+  (doc mul-raw
+    "multiplies two quaternions (Hamilton product) without normalization.
+Semantic: Applies b, then a (a * b).")
+  (defn mul-raw [a b]
+    (let [aw @(Quaternion.w a)
+          ax @(Quaternion.x a)
+          ay @(Quaternion.y a)
+          az @(Quaternion.z a)
+          bw @(Quaternion.w b)
+          bx @(Quaternion.x b)
+          by @(Quaternion.y b)
+          bz @(Quaternion.z b)]
+      (Quaternion.init
+        (+ (+ (- (* aw bx) (* az by)) (* ay bz)) (* ax bw))
+        (+ (+ (- (* aw by) (* ax bz)) (* az bx)) (* ay bw))
+        (+ (+ (- (* aw bz) (* ay bx)) (* ax by)) (* az bw))
+        (- (- (- (* aw bw) (* ax bx)) (* ay by)) (* az bz)))))
+
+  (doc mul "multiplies two quaternions (Hamilton product).
+Semantic: Applies b, then a (a * b). Returns a normalized result.")
+  (defn mul [a b] (Quaternion.normalize &(Quaternion.mul-raw a b)))
+
+  (doc from-axis-angle
+    "creates a quaternion representing a rotation around an axis (must be normalized).")
+  (defn from-axis-angle [axis angle]
+    (let [s (sin (* angle 0.5))
+          c (cos (* angle 0.5))]
+      (Quaternion.normalize
+        &(Quaternion.init (* @(Vector3.x &axis) s)
+                          (* @(Vector3.y &axis) s)
+                          (* @(Vector3.z &axis) s)
+                          c))))
+
+  (doc from-euler "creates a quaternion from Euler angles (in radians).
+Convention: YXZ intrinsic order (Yaw then Pitch then Roll).")
+  (defn from-euler [yaw pitch roll]
+    (let [cy (cos (* yaw 0.5))
+          sy (sin (* yaw 0.5))
+          cp (cos (* pitch 0.5))
+          sp (sin (* pitch 0.5))
+          cr (cos (* roll 0.5))
+          sr (sin (* roll 0.5))
+          qx (+ (* (* cy sp) cr) (* (* sy cp) sr))
+          qy (- (* (* sy cp) cr) (* (* cy sp) sr))
+          qz (+ (* (* cy cp) sr) (* (* sy sp) cr))
+          qw (- (* (* cy cp) cr) (* (* sy sp) sr))]
+      (Quaternion.normalize &(Quaternion.init qx qy qz qw))))
+
+  (doc to-euler "converts a quaternion to Euler angles (radians).
+Returns a Vector3 containing [yaw, pitch, roll].")
+  (defn to-euler [q]
+    (let [qx @(Quaternion.x q)
+          qy @(Quaternion.y q)
+          qz @(Quaternion.z q)
+          qw @(Quaternion.w q)
+          ;; Pitch (x-axis rotation)
+          sinp (* 2.0 (- (* qw qy) (* qz qx)))
+          pitch (if (>= (abs sinp) 1.0)
+            (* (/ sinp (abs sinp)) (/ 3.1415926535000001 2.0))
+            (asin sinp))
+          ;; Yaw (y-axis rotation)
+          siny_cosp (* 2.0 (+ (* qw qz) (* qx qy)))
+          cosy_cosp (- 1.0 (* 2.0 (+ (* qy qy) (* qz qz))))
+          yaw (atan2 siny_cosp cosy_cosp)
+          ;; Roll (z-axis rotation)
+          sinr_cosp (* 2.0 (+ (* qw qx) (* qy qz)))
+          cosr_cosp (- 1.0 (* 2.0 (+ (* qx qx) (* qy qy))))
+          roll (atan2 sinr_cosp cosr_cosp)]
+      (Vector3.init yaw pitch roll)))
+
+  (defn rotate [q v]
+    (let [q-v (Quaternion.init @(Vector3.x v) @(Vector3.y v) @(Vector3.z v) 0.0)
+          q-inv (Quaternion.inverse q)
+          res (Quaternion.mul-raw
+            (the (Ref Quaternion) (ref (Quaternion.mul-raw q &q-v)))
+            &q-inv)]
+      (Vector3.init @(Quaternion.x &res)
+                    @(Quaternion.y &res)
+                    @(Quaternion.z &res)))))
+
+(doc TransformMat4 "is a 4x4 matrix for spatial transformations.
+Convention: Column-major (OpenGL/WGPU style), Right-handed.
+NOTE: This is the engine's canonical source of truth for spatial orientation.")
+(deftype TransformMat4 [data (Array Float)])
+
+(defmodule TransformMat4
+  (defn identity []
+    (let [m (Array.replicate 16 &0f)]
+      (do
+        (Array.aset! &m 0 1f)
+        (Array.aset! &m 5 1f)
+        (Array.aset! &m 10 1f)
+        (Array.aset! &m 15 1f)
+        (TransformMat4.init m))))
+
+  (doc get-column "extracts a column as a Vector3 Double.")
+  (defn get-column [m col]
+    (let [d (TransformMat4.data m)
+          idx (* col 4)]
+      (Vector3.init
+        (the Double (from-float @(Array.unsafe-nth d idx)))
+        (the Double (from-float @(Array.unsafe-nth d (+ idx 1))))
+        (the Double (from-float @(Array.unsafe-nth d (+ idx 2)))))))
+
+  (doc from-trs "generates a model matrix from position, rotation, and scale.
+Composition Order: M = T * R * S.")
+  (defn from-trs [pos rot scale]
+    (let [m (Array.replicate 16 &0f)
+          qx @(Quaternion.x rot)
+          qy @(Quaternion.y rot)
+          qz @(Quaternion.z rot)
+          qw @(Quaternion.w rot)
+          sx (the Float (Double.to-float @(Vector3.x scale)))
+          sy (the Float (Double.to-float @(Vector3.y scale)))
+          sz (the Float (Double.to-float @(Vector3.z scale)))
+          tx (the Float (Double.to-float @(Vector3.x pos)))
+          ty (the Float (Double.to-float @(Vector3.y pos)))
+          tz (the Float (Double.to-float @(Vector3.z pos)))]
+      (do
+        ;; Column 0 (Right)
+        (Array.aset! &m
+                     0
+                     (* sx
+                        (the Float
+                             (Double.to-float (- 1.0
+                                                 (* 2.0 (+ (* qy qy) (* qz qz))))))))
+        (Array.aset! &m
+                     1
+                     (* sx
+                        (the Float
+                             (Double.to-float (* 2.0 (+ (* qx qy) (* qz qw)))))))
+        (Array.aset! &m
+                     2
+                     (* sx
+                        (the Float
+                             (Double.to-float (* 2.0 (- (* qx qz) (* qy qw)))))))
+
+        ;; Column 1 (Up)
+        (Array.aset! &m
+                     4
+                     (* sy
+                        (the Float
+                             (Double.to-float (* 2.0 (- (* qx qy) (* qz qw)))))))
+        (Array.aset! &m
+                     5
+                     (* sy
+                        (the Float
+                             (Double.to-float (- 1.0
+                                                 (* 2.0 (+ (* qx qx) (* qz qz))))))))
+        (Array.aset! &m
+                     6
+                     (* sy
+                        (the Float
+                             (Double.to-float (* 2.0 (+ (* qy qz) (* qx qw)))))))
+
+        ;; Column 2 (Forward)
+        (Array.aset! &m
+                     8
+                     (* sz
+                        (the Float
+                             (Double.to-float (* 2.0 (+ (* qx qz) (* qy qw)))))))
+        (Array.aset! &m
+                     9
+                     (* sz
+                        (the Float
+                             (Double.to-float (* 2.0 (- (* qy qz) (* qx qw)))))))
+        (Array.aset! &m
+                     10
+                     (* sz
+                        (the Float
+                             (Double.to-float (- 1.0
+                                                 (* 2.0 (+ (* qx qx) (* qy qy))))))))
+
+        (Array.aset! &m 12 tx)
+        (Array.aset! &m 13 ty)
+        (Array.aset! &m 14 tz)
+        (Array.aset! &m 15 1f)
+        (TransformMat4.init m)))))
+
+(doc Transform "represents the spatial state of an object.")
+(deftype Transform
+  [position (Vector3 Double)
+   rotation Quaternion
+   scale (Vector3 Double)])
+
+(defmodule Transform
+  (defn new [p r s] (Transform.init p r s))
+  (defn identity []
+    (Transform.init (Vector3.init 0.0 0.0 0.0)
+                    (Quaternion.identity)
+                    (Vector3.init 1.0 1.0 1.0)))
+
+  (defn to-matrix [t]
+    (TransformMat4.from-trs (Transform.position t)
+                            (Transform.rotation t)
+                            (Transform.scale t)))
+
+  (doc to-inverse-matrix
+    "generates the inverse model matrix. M^-1 = S^-1 * R^-1 * T^-1.")
+  (defn to-inverse-matrix [t]
+    (let [p (Transform.position t)
+          q (Transform.rotation t)
+          s (Transform.scale t)
+          ;; Safety: Clamp scale epsilon to prevent division by zero
+          eps 0.0001
+          sx (let [val @(Vector3.x s)]
+            (if (< (abs val) eps) (if (< val 0.0) (- 0.0 eps) eps) val))
+          sy (let [val @(Vector3.y s)]
+            (if (< (abs val) eps) (if (< val 0.0) (- 0.0 eps) eps) val))
+          sz (let [val @(Vector3.z s)]
+            (if (< (abs val) eps) (if (< val 0.0) (- 0.0 eps) eps) val))
+          inv-s (Vector3.init (/ 1.0 sx) (/ 1.0 sy) (/ 1.0 sz))
+          inv-q (Quaternion.conjugate q)
+          m (Array.replicate 16 &0f)
+          qx @(Quaternion.x &inv-q)
+          qy @(Quaternion.y &inv-q)
+          qz @(Quaternion.z &inv-q)
+          qw @(Quaternion.w &inv-q)
+          isx (the Float (Double.to-float @(Vector3.x &inv-s)))
+          isy (the Float (Double.to-float @(Vector3.y &inv-s)))
+          isz (the Float (Double.to-float @(Vector3.z &inv-s)))]
+      (do
+        (Array.aset! &m
+                     0
+                     (* isx
+                        (the Float
+                             (Double.to-float (- 1.0
+                                                 (* 2.0 (+ (* qy qy) (* qz qz))))))))
+        (Array.aset! &m
+                     4
+                     (* isx
+                        (the Float
+                             (Double.to-float (* 2.0 (+ (* qx qy) (* qz qw)))))))
+        (Array.aset! &m
+                     8
+                     (* isx
+                        (the Float
+                             (Double.to-float (* 2.0 (- (* qx qz) (* qy qw)))))))
+
+        (Array.aset! &m
+                     1
+                     (* isy
+                        (the Float
+                             (Double.to-float (* 2.0 (- (* qx qy) (* qz qw)))))))
+        (Array.aset! &m
+                     5
+                     (* isy
+                        (the Float
+                             (Double.to-float (- 1.0
+                                                 (* 2.0 (+ (* qx qx) (* qz qz))))))))
+        (Array.aset! &m
+                     9
+                     (* isy
+                        (the Float
+                             (Double.to-float (* 2.0 (+ (* qy qz) (* qx qw)))))))
+
+        (Array.aset! &m
+                     2
+                     (* isz
+                        (the Float
+                             (Double.to-float (* 2.0 (+ (* qx qz) (* qy qw)))))))
+        (Array.aset! &m
+                     6
+                     (* isz
+                        (the Float
+                             (Double.to-float (* 2.0 (- (* qy qz) (* qx qw)))))))
+        (Array.aset! &m
+                     10
+                     (* isz
+                        (the Float
+                             (Double.to-float (- 1.0
+                                                 (* 2.0 (+ (* qx qx) (* qy qy))))))))
+
+        (let [rx (the Float (Double.to-float @(Vector3.x p)))
+              ry (the Float (Double.to-float @(Vector3.y p)))
+              rz (the Float (Double.to-float @(Vector3.z p)))]
+          (do
+            (Array.aset! &m
+                         12
+                         (- 0f
+                            (+ (* @(Array.unsafe-nth &m 0) rx)
+                               (+ (* @(Array.unsafe-nth &m 4) ry)
+                                  (* @(Array.unsafe-nth &m 8) rz)))))
+            (Array.aset! &m
+                         13
+                         (- 0f
+                            (+ (* @(Array.unsafe-nth &m 1) rx)
+                               (+ (* @(Array.unsafe-nth &m 5) ry)
+                                  (* @(Array.unsafe-nth &m 9) rz)))))
+            (Array.aset! &m
+                         14
+                         (- 0f
+                            (+ (* @(Array.unsafe-nth &m 2) rx)
+                               (+ (* @(Array.unsafe-nth &m 6) ry)
+                                  (* @(Array.unsafe-nth &m 10) rz)))))
+            (Array.aset! &m 15 1f)))
+        (TransformMat4.init m))))
+
+  (defn right [t] (TransformMat4.get-column &(Transform.to-matrix t) 0))
+  (defn up [t] (TransformMat4.get-column &(Transform.to-matrix t) 1))
+  (defn forward [t] (TransformMat4.get-column &(Transform.to-matrix t) 2))
+
+  (defn right-quat [q]
+    (TransformMat4.get-column
+      &(TransformMat4.from-trs &(Vector3.init 0.0 0.0 0.0)
+                               q
+                               &(Vector3.init 1.0 1.0 1.0))
+      0))
+  (defn up-quat [q]
+    (TransformMat4.get-column
+      &(TransformMat4.from-trs &(Vector3.init 0.0 0.0 0.0)
+                               q
+                               &(Vector3.init 1.0 1.0 1.0))
+      1))
+  (defn forward-quat [q]
+    (TransformMat4.get-column
+      &(TransformMat4.from-trs &(Vector3.init 0.0 0.0 0.0)
+                               q
+                               &(Vector3.init 1.0 1.0 1.0))
+      2))
+
+  (defn set-rotation-val! [t r] (Transform.set-rotation t r)))

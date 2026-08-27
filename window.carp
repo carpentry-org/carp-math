@@ -1,0 +1,117 @@
+(load "complex.carp")
+
+(use Array)
+(use Double)
+
+(defmodule Window
+  (doc hann "generates a Hann window of length `n`.")
+  (defn hann [n]
+    (let [win (replicate n &0.0)
+          denom (Double.from-int (- n 1))]
+      (do
+        (for [i 0 n]
+          (let [term (Double.cos
+                  (/ (* 2.0 (* Double.pi (Double.from-int i))) denom))]
+            (Array.aset! &win i (* 0.5 (- 1.0 term)))))
+        win)))
+
+  (doc hamming "generates a Hamming window of length `n`.")
+  (defn hamming [n]
+    (let [win (replicate n &0.0)
+          denom (Double.from-int (- n 1))]
+      (do
+        (for [i 0 n]
+          (let [term (Double.cos
+                  (/ (* 2.0 (* Double.pi (Double.from-int i))) denom))]
+            (Array.aset! &win i (- 0.54 (* 0.46 term)))))
+        win)))
+
+  (doc blackman "generates a Blackman window of length `n`.")
+  (defn blackman [n]
+    (let [win (replicate n &0.0)
+          denom (Double.from-int (- n 1))]
+      (do
+        (for [i 0 n]
+          (let [a0 0.42
+                a1 0.5
+                a2 0.08
+                t1 (Double.cos
+                  (/ (* 2.0 (* Double.pi (Double.from-int i))) denom))
+                t2 (Double.cos
+                  (/ (* 4.0 (* Double.pi (Double.from-int i))) denom))]
+            (Array.aset! &win i (+ (- a0 (* a1 t1)) (* a2 t2)))))
+        win)))
+
+  (doc rectangular "generates a Rectangular window of length `n` (all ones).")
+  (defn rectangular [n] (replicate n &1.0))
+
+  (doc bartlett "generates a Bartlett (triangular) window of length `n`.")
+  (defn bartlett [n]
+    (let [win (replicate n &0.0)
+          center (/ (Double.from-int (- n 1)) 2.0)]
+      (do
+        (for [i 0 n]
+          (let [val (- 1.0
+                       (/ (Double.abs (- (Double.from-int i) center)) center))]
+            (Array.aset! &win i val)))
+        win)))
+
+  (doc gaussian
+    "generates a Gaussian window of length `n` with standard deviation parameter `sigma`.")
+  (defn gaussian [n sigma]
+    (let [win (replicate n &0.0)
+          center (/ (Double.from-int (- n 1)) 2.0)]
+      (do
+        (for [i 0 n]
+          (let [diff (- (Double.from-int i) center)
+                exponent (* -0.5
+                            (/ (* diff diff)
+                               (* (* sigma center) (* sigma center))))]
+            (Array.aset! &win i (Double.exp exponent))))
+        win)))
+
+  (doc flat-top "generates a Flat Top window of length `n`.")
+  (defn flat-top [n]
+    (let [win (replicate n &0.0)
+          denom (Double.from-int (- n 1))]
+      (do
+        (for [i 0 n]
+          (let [a0 0.21557894999999999
+                a1 0.41663158
+                a2 0.27726316000000001
+                a3 0.083578949999999999
+                a4 0.00694737
+                term (/ (* 2.0 Double.pi) denom)
+                idx (Double.from-int i)
+                val (+
+                  (-
+                    (+
+                      (- a0 (* a1 (Double.cos (* 1.0 (* term idx)))))
+                      (* a2 (Double.cos (* 2.0 (* term idx)))))
+                    (* a3 (Double.cos (* 3.0 (* term idx)))))
+                  (* a4 (Double.cos (* 4.0 (* term idx)))))]
+            (Array.aset! &win i val)))
+        win)))
+
+  (doc apply! "multiplies the complex array in-place by the window function.")
+  (defn apply! [arr win]
+    (let [n (Array.length arr)]
+      (do
+        (assert (= n (Array.length win)))
+        (for [i 0 n]
+          (let [w @(Array.unsafe-nth win i)
+                val @(Array.unsafe-nth arr i)]
+            (Array.aset! arr
+                         i
+                         (Complex.init (* @(Complex.real &val) w)
+                                       (* @(Complex.imag &val) w))))))))
+
+  (doc apply-real! "multiplies the real array in-place by the window function.")
+  (defn apply-real! [arr win]
+    (let [n (Array.length arr)]
+      (do
+        (assert (= n (Array.length win)))
+        (for [i 0 n]
+          (let [w @(Array.unsafe-nth win i)
+                val @(Array.unsafe-nth arr i)]
+            (Array.aset! arr i (* val w))))))))

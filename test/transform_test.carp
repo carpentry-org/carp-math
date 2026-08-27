@@ -1,0 +1,71 @@
+(load "Test.carp")
+(use Test)
+(load "transform.carp")
+(use Transform)
+(use Vector3)
+(use Quaternion)
+
+(deftest transform-test
+  (let [state (Test.State.init 0 0)]
+    (let [;; 1. Identity Matrix Test
+          m-id (TransformMat4.identity)
+          data (TransformMat4.data &m-id)
+          s1 (Test.assert-equal &state
+                                1f
+                                @(Array.unsafe-nth data 0)
+                                "Identity [0] is 1")
+          s2 (Test.assert-equal &s1
+                                1f
+                                @(Array.unsafe-nth data 15)
+                                "Identity [15] is 1")
+          ;; 2. TRS Matrix Generation
+          pos (Vector3.init 1.0 2.0 3.0)
+          rot (Quaternion.identity)
+          scale (Vector3.init 1.0 1.0 1.0)
+          m-trs (TransformMat4.from-trs &pos &rot &scale)
+          d-trs (TransformMat4.data &m-trs)
+          s3 (Test.assert-equal &s2
+                                1f
+                                @(Array.unsafe-nth d-trs 12)
+                                "Translation X is 1.0")
+          s4 (Test.assert-equal &s3
+                                2f
+                                @(Array.unsafe-nth d-trs 13)
+                                "Translation Y is 2.0")
+          s5 (Test.assert-equal &s4
+                                3f
+                                @(Array.unsafe-nth d-trs 14)
+                                "Translation Z is 3.0")
+          ;; 3. Rotation Correctness: 90 deg Yaw (Y-axis)
+          ;; Forward (+Z) rotated 90 deg around Y becomes +X
+          t-yaw (Transform.identity)
+          _y (Transform.set-rotation! &t-yaw
+                                      (Quaternion.from-euler 1.5707960000000001
+                                                             0.0
+                                                             0.0))
+          fwd-yaw (Transform.forward &t-yaw)
+          s6 (Test.assert-true &s5
+                               (> @(Vector3.x &fwd-yaw) 0.9)
+                               "90 deg Yaw: Forward is +X")
+          ;; 4. Rotation Correctness: 90 deg Pitch (X-axis)
+          ;; Forward (+Z) rotated 90 deg around X becomes -Y
+          t-pitch (Transform.identity)
+          _p (Transform.set-rotation! &t-pitch
+                                      (Quaternion.from-euler 0.0
+                                                             1.5707960000000001
+                                                             0.0))
+          fwd-pitch (Transform.forward &t-pitch)
+          s7 (Test.assert-true &s6
+                               (< @(Vector3.y &fwd-pitch) -0.9)
+                               "90 deg Pitch: Forward is -Y")
+          ;; 5. Inversion Parity
+          t-inv (Transform.init (Vector3.init 10.0 0.0 0.0)
+                                (Quaternion.identity)
+                                (Vector3.init 1.0 1.0 1.0))
+          m-inv (Transform.to-inverse-matrix &t-inv)
+          d-inv (TransformMat4.data &m-inv)
+          s8 (Test.assert-equal &s7
+                                -10f
+                                @(Array.unsafe-nth d-inv 12)
+                                "Inverse Translation X is -10.0")]
+      s8)))

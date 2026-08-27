@@ -1,0 +1,13 @@
+out/
+*.c
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*~
+*.swp
+*.swo
+.DS_Store
+*.log
