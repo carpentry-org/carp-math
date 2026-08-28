@@ -39,7 +39,8 @@ jobs:
         run: |
           carp-fmt --check $(find . -name '*.carp' \
             -not -path './out/*' \
-            -not -path './docs/*')
+            -not -path './docs/*' \
+            -not -path './.carp-src/*')
 
       - name: Generate docs
         run: carp -x gendocs.carp
