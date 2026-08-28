@@ -1,0 +1,599 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../style.css">
+    </head>
+    <body>
+        <div class="content">
+            <div class="logo">
+                <a href="https://github.com/carpentry-org/carp-math">
+                    <img src="">
+                </a>
+                <div class="title">
+                    carp-math
+                </div>
+                <div class="index">
+                    <ul>
+                        <li>
+                            <a href="Color.html">
+                                Color
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGB.html">
+                                RGB
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGBA.html">
+                                RGBA
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSL.html">
+                                HSL
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSV.html">
+                                HSV
+                            </a>
+                        </li>
+                        <li>
+                            <a href="CMYK.html">
+                                CMYK
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Complex.html">
+                                Complex
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Convolution.html">
+                                Convolution
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FFT.html">
+                                FFT
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Mat.html">
+                                Mat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Matrix.html">
+                                Matrix
+                            </a>
+                        </li>
+                        <li>
+                            <details>
+                                <summary>
+                                    <a href="Noise.html">
+                                        Noise
+                                    </a>
+                                </summary>
+                                <ul>
+                                    <li>
+                                        <a href="Noise.Fast.html">
+                                            Fast
+                                        </a>
+                                    </li>
+                                </ul>
+                            </details>
+                        </li>
+                        <li>
+                            <a href="NoiseState.html">
+                                NoiseState
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FBMConfig.html">
+                                FBMConfig
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Simd.html">
+                                Simd
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdFloat.html">
+                                SimdFloat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdInt.html">
+                                SimdInt
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdArray.html">
+                                SimdArray
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Spectrum.html">
+                                Spectrum
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Quaternion.html">
+                                Quaternion
+                            </a>
+                        </li>
+                        <li>
+                            <a href="TransformMat4.html">
+                                TransformMat4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Transform.html">
+                                Transform
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Window.html">
+                                Window
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="module">
+                <h1>
+                    FFT
+                </h1>
+                <div class="module-description">
+                    
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#bit-reverse-permute!">
+                        <h3 id="bit-reverse-permute!">
+                            bit-reverse-permute!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array a) b)] ())
+                    </p>
+                    <pre class="args">
+                        (bit-reverse-permute! arr)
+                    </pre>
+                    <p class="doc">
+                        <p>performs an in-place bit-reversal permutation on the array.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#fft">
+                        <h3 id="fft">
+                            fft
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (fft arr)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a 1D FFT on the array of complex numbers. Asserts that the length is a power of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#fft!">
+                        <h3 id="fft!">
+                            fft!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Bool] ())
+                    </p>
+                    <pre class="args">
+                        (fft! arr inverse)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a 1D Cooley-Tukey Radix-2 FFT in-place on the given array of complex numbers. Set <code>inverse</code> to true for IFFT. Asserts that the length of the array is a power of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#fft2d">
+                        <h3 id="fft2d">
+                            fft2d
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Int, Int] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (fft2d arr rows cols)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a 2D FFT on a flat array of size rows x cols. Asserts size and powers of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#fft2d!">
+                        <h3 id="fft2d!">
+                            fft2d!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Int, Int, Bool] ())
+                    </p>
+                    <pre class="args">
+                        (fft2d! arr rows cols inverse)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a 2D Cooley-Tukey Radix-2 FFT in-place on the given flat array representing a 2D grid of size rows x cols.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#fftshift">
+                        <h3 id="fftshift">
+                            fftshift
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array a) b)] (Array a))
+                    </p>
+                    <pre class="args">
+                        (fftshift arr)
+                    </pre>
+                    <p class="doc">
+                        <p>shifts the zero-frequency component to the center of the spectrum.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#frequency-axis">
+                        <h3 id="frequency-axis">
+                            frequency-axis
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Int, Double] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (frequency-axis n sample-rate)
+                    </pre>
+                    <p class="doc">
+                        <p>generates the positive frequency bins (size N/2 + 1) for a real FFT of length <code>n</code> and sampling rate <code>sample-rate</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#frequency-axis-full">
+                        <h3 id="frequency-axis-full">
+                            frequency-axis-full
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Int, Double] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (frequency-axis-full n sample-rate)
+                    </pre>
+                    <p class="doc">
+                        <p>generates the full frequency bins (size N) for a complex FFT of length <code>n</code> and sampling rate <code>sample-rate</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#ifft">
+                        <h3 id="ifft">
+                            ifft
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (ifft arr)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a 1D inverse FFT on the array of complex numbers. Asserts that the length is a power of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#ifft2d">
+                        <h3 id="ifft2d">
+                            ifft2d
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Int, Int] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (ifft2d arr rows cols)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a 2D inverse FFT on a flat array of size rows x cols. Asserts size and powers of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#ifftshift">
+                        <h3 id="ifftshift">
+                            ifftshift
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array a) b)] (Array a))
+                    </p>
+                    <pre class="args">
+                        (ifftshift arr)
+                    </pre>
+                    <p class="doc">
+                        <p>shifts the zero-frequency component back from the center of the spectrum.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#irfft">
+                        <h3 id="irfft">
+                            irfft
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (irfft arr)
+                    </pre>
+                    <p class="doc">
+                        <p>reconstructs a real signal from its one-sided complex spectrum of size M = N/2 + 1, enforcing Hermitian symmetry and running an inverse FFT.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#next-power-of-two">
+                        <h3 id="next-power-of-two">
+                            next-power-of-two
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Int] Int)
+                    </p>
+                    <pre class="args">
+                        (next-power-of-two n)
+                    </pre>
+                    <p class="doc">
+                        <p>finds the smallest power of two greater than or equal to <code>n</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#pad-zero">
+                        <h3 id="pad-zero">
+                            pad-zero
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Double) a), Int] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (pad-zero arr new-len)
+                    </pre>
+                    <p class="doc">
+                        <p>pads a real array with zeros to the specified new length.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#pad-zero-complex">
+                        <h3 id="pad-zero-complex">
+                            pad-zero-complex
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Int] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (pad-zero-complex arr new-len)
+                    </pre>
+                    <p class="doc">
+                        <p>pads a complex array with complex zeros to the specified new length.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#power-of-two?">
+                        <h3 id="power-of-two?">
+                            power-of-two?
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Int] Bool)
+                    </p>
+                    <pre class="args">
+                        (power-of-two? n)
+                    </pre>
+                    <p class="doc">
+                        <p>checks if <code>n</code> is a power of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#rfft">
+                        <h3 id="rfft">
+                            rfft
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Double) a)] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (rfft arr)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a Real FFT on the given array of real numbers, returning the full complex spectrum. Asserts that the length is a power of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#rfft-one-sided">
+                        <h3 id="rfft-one-sided">
+                            rfft-one-sided
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Double) a)] (Array Complex))
+                    </p>
+                    <pre class="args">
+                        (rfft-one-sided arr)
+                    </pre>
+                    <p class="doc">
+                        <p>performs a Real FFT on the given array of real numbers, returning only the one-sided complex spectrum (first N/2 + 1 elements). Asserts that the length is a power of two.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#try-fft">
+                        <h3 id="try-fft">
+                            try-fft
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Result (Array Complex) String))
+                    </p>
+                    <pre class="args">
+                        (try-fft arr)
+                    </pre>
+                    <p class="doc">
+                        <p>attempts to perform a 1D FFT on the array of complex numbers, returning a Result.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#try-fft2d">
+                        <h3 id="try-fft2d">
+                            try-fft2d
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Int, Int] (Result (Array Complex) String))
+                    </p>
+                    <pre class="args">
+                        (try-fft2d arr rows cols)
+                    </pre>
+                    <p class="doc">
+                        <p>attempts to perform a 2D FFT on a flat array of size rows x cols, returning a Result.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#try-ifft">
+                        <h3 id="try-ifft">
+                            try-ifft
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Result (Array Complex) String))
+                    </p>
+                    <pre class="args">
+                        (try-ifft arr)
+                    </pre>
+                    <p class="doc">
+                        <p>attempts to perform a 1D inverse FFT on the array of complex numbers, returning a Result.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#try-ifft2d">
+                        <h3 id="try-ifft2d">
+                            try-ifft2d
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a), Int, Int] (Result (Array Complex) String))
+                    </p>
+                    <pre class="args">
+                        (try-ifft2d arr rows cols)
+                    </pre>
+                    <p class="doc">
+                        <p>attempts to perform a 2D inverse FFT on a flat array of size rows x cols, returning a Result.</p>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

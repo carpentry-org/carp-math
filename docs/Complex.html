@@ -1,0 +1,1199 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../style.css">
+    </head>
+    <body>
+        <div class="content">
+            <div class="logo">
+                <a href="https://github.com/carpentry-org/carp-math">
+                    <img src="">
+                </a>
+                <div class="title">
+                    carp-math
+                </div>
+                <div class="index">
+                    <ul>
+                        <li>
+                            <a href="Color.html">
+                                Color
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGB.html">
+                                RGB
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGBA.html">
+                                RGBA
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSL.html">
+                                HSL
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSV.html">
+                                HSV
+                            </a>
+                        </li>
+                        <li>
+                            <a href="CMYK.html">
+                                CMYK
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Complex.html">
+                                Complex
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Convolution.html">
+                                Convolution
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FFT.html">
+                                FFT
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Mat.html">
+                                Mat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Matrix.html">
+                                Matrix
+                            </a>
+                        </li>
+                        <li>
+                            <details>
+                                <summary>
+                                    <a href="Noise.html">
+                                        Noise
+                                    </a>
+                                </summary>
+                                <ul>
+                                    <li>
+                                        <a href="Noise.Fast.html">
+                                            Fast
+                                        </a>
+                                    </li>
+                                </ul>
+                            </details>
+                        </li>
+                        <li>
+                            <a href="NoiseState.html">
+                                NoiseState
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FBMConfig.html">
+                                FBMConfig
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Simd.html">
+                                Simd
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdFloat.html">
+                                SimdFloat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdInt.html">
+                                SimdInt
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdArray.html">
+                                SimdArray
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Spectrum.html">
+                                Spectrum
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Quaternion.html">
+                                Quaternion
+                            </a>
+                        </li>
+                        <li>
+                            <a href="TransformMat4.html">
+                                TransformMat4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Transform.html">
+                                Transform
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Window.html">
+                                Window
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="module">
+                <h1>
+                    Complex
+                </h1>
+                <div class="module-description">
+                    
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#*">
+                        <h3 id="*">
+                            *
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b)] Complex)
+                    </p>
+                    <pre class="args">
+                        (* a b)
+                    </pre>
+                    <p class="doc">
+                        <p>Multiplies two complex numbers using the formula: (ac - bd) + (ad + bc)i.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#+">
+                        <h3 id="+">
+                            +
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b)] Complex)
+                    </p>
+                    <pre class="args">
+                        (+ a b)
+                    </pre>
+                    <p class="doc">
+                        <p>Adds two complex numbers.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#-">
+                        <h3 id="-">
+                            -
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b)] Complex)
+                    </p>
+                    <pre class="args">
+                        (- a b)
+                    </pre>
+                    <p class="doc">
+                        <p>Subtracts the second complex number from the first.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#/">
+                        <h3 id="/">
+                            /
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b)] Complex)
+                    </p>
+                    <pre class="args">
+                        (/ a b)
+                    </pre>
+                    <p class="doc">
+                        <p>Divides the first complex number by the second.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#=">
+                        <h3 id="=">
+                            =
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b)] Bool)
+                    </p>
+                    <pre class="args">
+                        (= a b)
+                    </pre>
+                    <p class="doc">
+                        <p>Performs structural equality comparison.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#abs">
+                        <h3 id="abs">
+                            abs
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Double)
+                    </p>
+                    <pre class="args">
+                        (abs a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the magnitude (absolute value) of a complex number. Uses a robust implementation (hypot) to prevent overflow/underflow.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#acos">
+                        <h3 id="acos">
+                            acos
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (acos z)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex inverse cosine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#acosh">
+                        <h3 id="acosh">
+                            acosh
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (acosh z)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex inverse hyperbolic cosine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#approx">
+                        <h3 id="approx">
+                            approx
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b), Double] Bool)
+                    </p>
+                    <pre class="args">
+                        (approx a b epsilon)
+                    </pre>
+                    <p class="doc">
+                        <p>Performs approximate equality comparison based on magnitude of difference.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#arg">
+                        <h3 id="arg">
+                            arg
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Double)
+                    </p>
+                    <pre class="args">
+                        (arg a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the phase angle (argument) of a complex number in radians.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#asin">
+                        <h3 id="asin">
+                            asin
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (asin z)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex inverse sine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#asinh">
+                        <h3 id="asinh">
+                            asinh
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (asinh z)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex inverse hyperbolic sine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#atan">
+                        <h3 id="atan">
+                            atan
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (atan z)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex inverse tangent.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#atanh">
+                        <h3 id="atanh">
+                            atanh
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (atanh z)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex inverse hyperbolic tangent.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#conj">
+                        <h3 id="conj">
+                            conj
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (conj a)
+                    </pre>
+                    <p class="doc">
+                        <p>Returns the complex conjugate: a - bi.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#copy">
+                        <h3 id="copy">
+                            copy
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>copies a <code>Complex</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#cos">
+                        <h3 id="cos">
+                            cos
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (cos a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex cosine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#cosh">
+                        <h3 id="cosh">
+                            cosh
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (cosh a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex hyperbolic cosine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#delete">
+                        <h3 id="delete">
+                            delete
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Complex] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>deletes a <code>Complex</code>. Should usually not be called manually.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#exp">
+                        <h3 id="exp">
+                            exp
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (exp a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex exponential: e^a.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#from-imag">
+                        <h3 id="from-imag">
+                            from-imag
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (from-imag im)
+                    </pre>
+                    <p class="doc">
+                        <p>Creates a complex number from an imaginary value: 0 + im*i.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#from-polar">
+                        <h3 id="from-polar">
+                            from-polar
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Double, Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (from-polar r theta)
+                    </pre>
+                    <p class="doc">
+                        <p>Creates a complex number from polar coordinates (radius and angle).</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#from-real">
+                        <h3 id="from-real">
+                            from-real
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (from-real r)
+                    </pre>
+                    <p class="doc">
+                        <p>Creates a complex number from a real value: r + 0i.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#i">
+                        <h3 id="i">
+                            i
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [] Complex)
+                    </p>
+                    <pre class="args">
+                        (i)
+                    </pre>
+                    <p class="doc">
+                        <p>Returns the complex number 0 + 1i.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#imag">
+                        <h3 id="imag">
+                            imag
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] (Ref Double a))
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>gets the <code>imag</code> property of a <code>Complex</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#init">
+                        <h3 id="init">
+                            init
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Double, Double] Complex)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>creates a <code>Complex</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#ln">
+                        <h3 id="ln">
+                            ln
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (ln a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the principal branch of the natural logarithm: ln(z).</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#norm">
+                        <h3 id="norm">
+                            norm
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Double)
+                    </p>
+                    <pre class="args">
+                        (norm a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the squared magnitude (norm) of a complex number: r^2 + i^2.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#one">
+                        <h3 id="one">
+                            one
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [] Complex)
+                    </p>
+                    <pre class="args">
+                        (one)
+                    </pre>
+                    <p class="doc">
+                        <p>Returns the complex number 1 + 0i.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#pow">
+                        <h3 id="pow">
+                            pow
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), (Ref Complex b)] Complex)
+                    </p>
+                    <pre class="args">
+                        (pow a b)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex power: a^b.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#powi">
+                        <h3 id="powi">
+                            powi
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Int] Complex)
+                    </p>
+                    <pre class="args">
+                        (powi a n)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex number raised to an integer power 'n' using exponentiation by squaring.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#prn">
+                        <h3 id="prn">
+                            prn
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] String)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>converts a <code>Complex</code> to a string.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#real">
+                        <h3 id="real">
+                            real
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] (Ref Double a))
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>gets the <code>real</code> property of a <code>Complex</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#recip">
+                        <h3 id="recip">
+                            recip
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (recip a)
+                    </pre>
+                    <p class="doc">
+                        <p>Returns the reciprocal of a complex number: 1/z.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#scalar-add">
+                        <h3 id="scalar-add">
+                            scalar-add
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (scalar-add a s)
+                    </pre>
+                    <p class="doc">
+                        <p>Adds a real scalar 's' to a complex number 'a'.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#scalar-div">
+                        <h3 id="scalar-div">
+                            scalar-div
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (scalar-div a s)
+                    </pre>
+                    <p class="doc">
+                        <p>Divides a complex number 'a' by a real scalar 's'.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#scalar-mul">
+                        <h3 id="scalar-mul">
+                            scalar-mul
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (scalar-mul a s)
+                    </pre>
+                    <p class="doc">
+                        <p>Multiplies a complex number 'a' by a real scalar 's'.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#scalar-over">
+                        <h3 id="scalar-over">
+                            scalar-over
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [Double, (Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (scalar-over s z)
+                    </pre>
+                    <p class="doc">
+                        <p>Divides a real scalar 's' by a complex number 'z'. Result is s * recip(z).</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#scalar-sub">
+                        <h3 id="scalar-sub">
+                            scalar-sub
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Double] Complex)
+                    </p>
+                    <pre class="args">
+                        (scalar-sub a s)
+                    </pre>
+                    <p class="doc">
+                        <p>Subtracts a real scalar 's' from a complex number 'a'.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-imag">
+                        <h3 id="set-imag">
+                            set-imag
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Complex, Double] Complex)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>imag</code> property of a <code>Complex</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-imag!">
+                        <h3 id="set-imag!">
+                            set-imag!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Double] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>imag</code> property of a <code>Complex</code> in place.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-real">
+                        <h3 id="set-real">
+                            set-real
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Complex, Double] Complex)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>real</code> property of a <code>Complex</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-real!">
+                        <h3 id="set-real!">
+                            set-real!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a), Double] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>real</code> property of a <code>Complex</code> in place.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#sin">
+                        <h3 id="sin">
+                            sin
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (sin a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex sine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#sinh">
+                        <h3 id="sinh">
+                            sinh
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (sinh a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex hyperbolic sine.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#sqrt">
+                        <h3 id="sqrt">
+                            sqrt
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (sqrt a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the principal square root of a complex number. Uses an algebraic formulation for better numerical stability.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#str">
+                        <h3 id="str">
+                            str
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] String)
+                    </p>
+                    <pre class="args">
+                        (str a)
+                    </pre>
+                    <p class="doc">
+                        <p>Converts a complex number to a string in 'a + bi' format.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#tan">
+                        <h3 id="tan">
+                            tan
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (tan a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex tangent.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#tanh">
+                        <h3 id="tanh">
+                            tanh
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref Complex a)] Complex)
+                    </p>
+                    <pre class="args">
+                        (tanh a)
+                    </pre>
+                    <p class="doc">
+                        <p>Calculates the complex hyperbolic tangent.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#update-imag">
+                        <h3 id="update-imag">
+                            update-imag
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Complex, (Ref (Fn [Double] Double a) b)] Complex)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>updates the <code>imag</code> property of a <code>Complex</code> using a function <code>f</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#update-real">
+                        <h3 id="update-real">
+                            update-real
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Complex, (Ref (Fn [Double] Double a) b)] Complex)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>updates the <code>real</code> property of a <code>Complex</code> using a function <code>f</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#zero">
+                        <h3 id="zero">
+                            zero
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [] Complex)
+                    </p>
+                    <pre class="args">
+                        (zero)
+                    </pre>
+                    <p class="doc">
+                        <p>Returns the complex number 0 + 0i.</p>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

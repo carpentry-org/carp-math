@@ -1,6 +1,6 @@
 (load "Test.carp")
 (use Test)
-(load "color.carp")
+(load "colors.carp")
 (use Color)
 
 (defn approx [a b] (< (Double.abs (- a b)) 0.01))

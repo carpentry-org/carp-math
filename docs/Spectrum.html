@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../style.css">
+    </head>
+    <body>
+        <div class="content">
+            <div class="logo">
+                <a href="https://github.com/carpentry-org/carp-math">
+                    <img src="">
+                </a>
+                <div class="title">
+                    carp-math
+                </div>
+                <div class="index">
+                    <ul>
+                        <li>
+                            <a href="Color.html">
+                                Color
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGB.html">
+                                RGB
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGBA.html">
+                                RGBA
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSL.html">
+                                HSL
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSV.html">
+                                HSV
+                            </a>
+                        </li>
+                        <li>
+                            <a href="CMYK.html">
+                                CMYK
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Complex.html">
+                                Complex
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Convolution.html">
+                                Convolution
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FFT.html">
+                                FFT
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Mat.html">
+                                Mat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Matrix.html">
+                                Matrix
+                            </a>
+                        </li>
+                        <li>
+                            <details>
+                                <summary>
+                                    <a href="Noise.html">
+                                        Noise
+                                    </a>
+                                </summary>
+                                <ul>
+                                    <li>
+                                        <a href="Noise.Fast.html">
+                                            Fast
+                                        </a>
+                                    </li>
+                                </ul>
+                            </details>
+                        </li>
+                        <li>
+                            <a href="NoiseState.html">
+                                NoiseState
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FBMConfig.html">
+                                FBMConfig
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Simd.html">
+                                Simd
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdFloat.html">
+                                SimdFloat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdInt.html">
+                                SimdInt
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdArray.html">
+                                SimdArray
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Spectrum.html">
+                                Spectrum
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Quaternion.html">
+                                Quaternion
+                            </a>
+                        </li>
+                        <li>
+                            <a href="TransformMat4.html">
+                                TransformMat4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Transform.html">
+                                Transform
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Window.html">
+                                Window
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="module">
+                <h1>
+                    Spectrum
+                </h1>
+                <div class="module-description">
+                    
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#db">
+                        <h3 id="db">
+                            db
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (db arr)
+                    </pre>
+                    <p class="doc">
+                        <p>returns the decibel (dB) log-magnitude spectrum of the complex array: 20 * log10(magnitude). Clamps small values to avoid log(0).</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#log-spectrum">
+                        <h3 id="log-spectrum">
+                            log-spectrum
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (log-spectrum arr)
+                    </pre>
+                    <p class="doc">
+                        <p>returns the natural log magnitude spectrum of the complex array.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#magnitude">
+                        <h3 id="magnitude">
+                            magnitude
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (magnitude arr)
+                    </pre>
+                    <p class="doc">
+                        <p>returns the magnitude spectrum of the complex array.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#phase">
+                        <h3 id="phase">
+                            phase
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (phase arr)
+                    </pre>
+                    <p class="doc">
+                        <p>returns the phase angle spectrum (in radians) of the complex array.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#power">
+                        <h3 id="power">
+                            power
+                        </h3>
+                    </a>
+                    <div class="description">
+                        defn
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref (Array Complex) a)] (Array Double))
+                    </p>
+                    <pre class="args">
+                        (power arr)
+                    </pre>
+                    <p class="doc">
+                        <p>returns the power spectrum (squared magnitude) of the complex array.</p>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

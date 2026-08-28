@@ -1,0 +1,579 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../style.css">
+    </head>
+    <body>
+        <div class="content">
+            <div class="logo">
+                <a href="https://github.com/carpentry-org/carp-math">
+                    <img src="">
+                </a>
+                <div class="title">
+                    carp-math
+                </div>
+                <div class="index">
+                    <ul>
+                        <li>
+                            <a href="Color.html">
+                                Color
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGB.html">
+                                RGB
+                            </a>
+                        </li>
+                        <li>
+                            <a href="RGBA.html">
+                                RGBA
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSL.html">
+                                HSL
+                            </a>
+                        </li>
+                        <li>
+                            <a href="HSV.html">
+                                HSV
+                            </a>
+                        </li>
+                        <li>
+                            <a href="CMYK.html">
+                                CMYK
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Complex.html">
+                                Complex
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Convolution.html">
+                                Convolution
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FFT.html">
+                                FFT
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Mat.html">
+                                Mat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Matrix.html">
+                                Matrix
+                            </a>
+                        </li>
+                        <li>
+                            <details>
+                                <summary>
+                                    <a href="Noise.html">
+                                        Noise
+                                    </a>
+                                </summary>
+                                <ul>
+                                    <li>
+                                        <a href="Noise.Fast.html">
+                                            Fast
+                                        </a>
+                                    </li>
+                                </ul>
+                            </details>
+                        </li>
+                        <li>
+                            <a href="NoiseState.html">
+                                NoiseState
+                            </a>
+                        </li>
+                        <li>
+                            <a href="FBMConfig.html">
+                                FBMConfig
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Simd.html">
+                                Simd
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdFloat.html">
+                                SimdFloat
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdInt.html">
+                                SimdInt
+                            </a>
+                        </li>
+                        <li>
+                            <a href="SimdArray.html">
+                                SimdArray
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Spectrum.html">
+                                Spectrum
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Quaternion.html">
+                                Quaternion
+                            </a>
+                        </li>
+                        <li>
+                            <a href="TransformMat4.html">
+                                TransformMat4
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Transform.html">
+                                Transform
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Window.html">
+                                Window
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="module">
+                <h1>
+                    RGBA
+                </h1>
+                <div class="module-description">
+                    
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#a">
+                        <h3 id="a">
+                            a
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] (Ref Double a))
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>gets the <code>a</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#b">
+                        <h3 id="b">
+                            b
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] (Ref Double a))
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>gets the <code>b</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#copy">
+                        <h3 id="copy">
+                            copy
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>copies a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#delete">
+                        <h3 id="delete">
+                            delete
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>deletes a <code>RGBA</code>. Should usually not be called manually.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#g">
+                        <h3 id="g">
+                            g
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] (Ref Double a))
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>gets the <code>g</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#init">
+                        <h3 id="init">
+                            init
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [Double, Double, Double, Double] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>creates a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#prn">
+                        <h3 id="prn">
+                            prn
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] String)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>converts a <code>RGBA</code> to a string.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#r">
+                        <h3 id="r">
+                            r
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] (Ref Double a))
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>gets the <code>r</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-a">
+                        <h3 id="set-a">
+                            set-a
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, Double] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>a</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-a!">
+                        <h3 id="set-a!">
+                            set-a!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a), Double] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>a</code> property of a <code>RGBA</code> in place.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-b">
+                        <h3 id="set-b">
+                            set-b
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, Double] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>b</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-b!">
+                        <h3 id="set-b!">
+                            set-b!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a), Double] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>b</code> property of a <code>RGBA</code> in place.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-g">
+                        <h3 id="set-g">
+                            set-g
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, Double] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>g</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-g!">
+                        <h3 id="set-g!">
+                            set-g!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a), Double] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>g</code> property of a <code>RGBA</code> in place.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-r">
+                        <h3 id="set-r">
+                            set-r
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, Double] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>r</code> property of a <code>RGBA</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#set-r!">
+                        <h3 id="set-r!">
+                            set-r!
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a), Double] ())
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>sets the <code>r</code> property of a <code>RGBA</code> in place.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#str">
+                        <h3 id="str">
+                            str
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [(Ref RGBA a)] String)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>converts a <code>RGBA</code> to a string.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#update-a">
+                        <h3 id="update-a">
+                            update-a
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, (Ref (Fn [Double] Double a) b)] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>updates the <code>a</code> property of a <code>RGBA</code> using a function <code>f</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#update-b">
+                        <h3 id="update-b">
+                            update-b
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, (Ref (Fn [Double] Double a) b)] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>updates the <code>b</code> property of a <code>RGBA</code> using a function <code>f</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#update-g">
+                        <h3 id="update-g">
+                            update-g
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, (Ref (Fn [Double] Double a) b)] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>updates the <code>g</code> property of a <code>RGBA</code> using a function <code>f</code>.</p>
+
+                    </p>
+                </div>
+                <div class="binder">
+                    <a class="anchor" href="#update-r">
+                        <h3 id="update-r">
+                            update-r
+                        </h3>
+                    </a>
+                    <div class="description">
+                        instantiate
+                    </div>
+                    <p class="sig">
+                        (Fn [RGBA, (Ref (Fn [Double] Double a) b)] RGBA)
+                    </p>
+                    <span>
+                        
+                    </span>
+                    <p class="doc">
+                        <p>updates the <code>r</code> property of a <code>RGBA</code> using a function <code>f</code>.</p>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
