@@ -11,3 +11,4 @@ out/
 *.swo
 .DS_Store
 *.log
+docs/
