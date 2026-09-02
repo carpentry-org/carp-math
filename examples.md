@@ -151,11 +151,11 @@ Here are some common ways to use the modular `carp-fft` library.
 First, load the required modules in your Carp entry point:
 
 ```clojure
-(load "path/to/carp-fft/complex.carp")
-(load "path/to/carp-fft/fft.carp")
-(load "path/to/carp-fft/window.carp")
-(load "path/to/carp-fft/spectrum.carp")
-(load "path/to/carp-fft/convolution.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "complex.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "fft.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "window.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "spectrum.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "convolution.carp")
 
 (use Complex)
 (use FFT)
@@ -271,7 +271,7 @@ Filter signals in the time-domain using high-performance frequency-domain convol
 Initializing SIMD registers, performing parallel addition, accessing lanes, and checking hardware-supported lane width:
 
 ```clojure
-(load "carp-simd/simd.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "simd.carp")
 (use Simd)
 
 (defn main []

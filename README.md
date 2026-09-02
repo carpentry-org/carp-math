@@ -10,9 +10,22 @@ A consolidated Math Library suite for the Carp programming language.
 - **[Simd](#simd)**: See module documentation below.
 - **[Transform](#transform)**: See module documentation below.
 
+## Installation
+
+```
+(load "git@github.com:carpentry-org/carp-math@master")
+```
+
+That pulls in every module. A single one can be loaded on its own:
+
+```
+(load "git@github.com:carpentry-org/carp-math@master" "matrix.carp")
+```
+
 ## Examples
 
-See [examples.md](examples.md) for module usage examples.
+See [examples.md](examples.md) for module usage examples, and the
+[API documentation](https://carpentry.dev/carp-math) for the full reference.
 
 ---
 
@@ -30,12 +43,16 @@ A graphics-oriented color library for the [Carp language](https://github.com/car
 
 ## Installation
 
-Add this to your project by loading `color.carp`.
-
 ```clojure
-(load "path/to/carp-color/color.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "colors.carp")
 (use Color)
 ```
+
+The file is `colors.carp`, not `color.carp`. Carp searches the working
+directory before the directory of the file doing the loading, and core's
+`Test.carp` opens with `(load "Color.carp")`. A `color.carp` in the project
+root answers that load on a case-insensitive filesystem, and every test in
+the project then fails to find `IO.colorize`.
 
 ## Running Tests
 
@@ -69,10 +86,8 @@ A robust, low-level numerical matrix library for the [Carp language](https://git
 
 ## Installation
 
-Add this to your project by loading `matrix.carp`.
-
 ```clojure
-(load "path/to/carp-matrix/matrix.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "matrix.carp")
 (use Mat)
 ```
 
@@ -106,10 +121,9 @@ A fast, seeded Simplex Noise implementation for the [Carp](https://github.com/ca
 
 ## Installation
 
-Clone this repository into your project or add it as a submodule:
-
-```bash
-git submodule add https://github.com/sqrew/carp-noise.git
+```clojure
+(load "git@github.com:carpentry-org/carp-math@master" "noise.carp")
+(use Noise)
 ```
 
 
@@ -148,7 +162,7 @@ A robust, double-precision Fast Fourier Transform (FFT) and Digital Signal Proce
 
 The library is separated into focused modules for easier extension and maintainability:
 
-1. **Complex Numbers (`complex.carp`):** Loaded via dependency [carp-complex-numbers](https://github.com/sqrew/carp-complex-numbers), providing double-precision complex arithmetic (`+`, `-`, `*`, `/`, `abs`/`norm`, conjugate, exponentiation, trigonometric functions, etc.).
+1. **Complex Numbers (`complex.carp`):** Loaded from `complex.carp` in this repo, providing double-precision complex arithmetic (`+`, `-`, `*`, `/`, `abs`/`norm`, conjugate, exponentiation, trigonometric functions, etc.).
 2. **Main Transforms (`fft.carp`):**
    - 1D FFT & IFFT (`fft`, `ifft`, `try-fft`, `try-ifft`) using a Cooley-Tukey Radix-2 decimation-in-time algorithm.
    - Real FFT (`rfft`, `rfft-one-sided`) and Complex-to-Real IFFT (`irfft`) which takes a one-sided spectrum (size $N/2 + 1$) and automatically reconstructs Hermitian symmetry before transforming.
@@ -163,11 +177,7 @@ The library is separated into focused modules for easier extension and maintaina
 Add the library files to your project:
 
 ```clojure
-(load "path/to/carp-fft/complex.carp")
-(load "path/to/carp-fft/fft.carp")
-(load "path/to/carp-fft/window.carp")
-(load "path/to/carp-fft/spectrum.carp")
-(load "path/to/carp-fft/convolution.carp")
+(load "git@github.com:carpentry-org/carp-math@master" "convolution.carp")
 
 (use Complex)
 (use FFT)
